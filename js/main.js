@@ -340,7 +340,7 @@ function(
         identifyParams = new IdentifyParameters();
 		identifyParams.returnGeometry = true;
         identifyParams.tolerance = (isMobile) ? 9 : 4;
-        identifyParams.layerIds = [3];
+        identifyParams.layerIds = [0,4,5];
         identifyParams.layerOption = "visible";
         identifyParams.width = view.width;
         identifyParams.height = view.height;
@@ -629,7 +629,7 @@ function(
 
     function createDialogs() {
 		// Report problem dialog:
-		var probDia = "<table><tr><td class='find-label'>Message:</td><td><textarea rows='4' cols='25' id='prob-msg' placeholder='Well ID is automatically included. Messages are anonymous unless contact info is included.'></textarea></td></tr>";
+		var probDia = "<table><tr><td class='find-label'>Message:</td><td><textarea rows='4' cols='25' id='prob-msg' placeholder='Well ID is automatically included. Please include email or phone number in case more information is needed.'></textarea></td></tr>";
 		probDia += "<tr><td></td><td><button class='find-button' onclick='sendProblem()'>Send</button></td></tr>";
 		probDia += "<tr><td colspan='2'><span class='toc-note'>(report website problems or suggestions <a href='mailto:killion@kgs.ku.edu'>here)</a></span></td></tr></table>";
 
@@ -664,10 +664,20 @@ function(
 
 	sendProblem = function() {
 		var sfa = view.popup.selectedFeature.attributes;
-		if (sfa.hasOwnProperty("INPUT_SEQ_NUMBER")) {
+		if ( sfa.hasOwnProperty("INPUT_SEQ_NUMBER") ) {
 			var fId = sfa.INPUT_SEQ_NUMBER;
 			var fName = sfa.OWNER_NAME;
 			var fType = "wwc5";
+			var otherId = "";
+		} else if ( sfa.hasOwnProperty("API_NUMBER") ) {
+			var fId = sfa.KID;
+			var fName = sfa.LEASE_NAME + sfa.WELL_NAME;
+			var fType = "ogwell";
+			var otherId = "";
+		} else if ( sfa.hasOwnProperty("FIELD_NAME") ) {
+			var fId = sfa.FIELD_KID;
+			var fName = sfa.FIELD_NAME;
+			var fType = "ogfield";
 			var otherId = "";
 		}
 
@@ -901,9 +911,10 @@ function(
 		dom.byId("mapDiv").style.cursor = "auto";
 		view.popup.features = feature;
 		view.popup.visible = true;
-		if (feature.length > 1) {
-			setTimeout(showPuDownloadIcon, 250);
-		}
+		// TODO: reinstate next?
+		// if (feature.length > 1) {
+		// 	setTimeout(showPuDownloadIcon, 250);
+		// }
     }
 
 
@@ -1600,8 +1611,18 @@ function(
 	}
 
 
-    showFullInfo = function() {
-		var url = "http://chasm.kgs.ku.edu/ords/wwc5.wwc5d2.well_details?well_id=" + $("#seq-num").html();
+    showFullInfo = function(type) {
+		switch (type) {
+			case "ogwell":
+				var url = "http://chasm.kgs.ku.edu/apex/qualified.well_page.DisplayWell?f_kid=" + $("#well-kid").html();
+				break;
+			case "field":
+				var url = "https://chasm.kgs.ku.edu/ords/oil.ogf4.IDProdQuery?FieldNumber=" + $("#field-kid").html();
+				break;
+			case "wwc5":
+				var url = "http://chasm.kgs.ku.edu/ords/wwc5.wwc5d2.well_details?well_id=" + $("#seq-num").html();
+				break;
+		}
 		var win = window.open(url, "target='_blank'");
     }
 
@@ -1883,31 +1904,98 @@ function(
 			var feature = result.feature;
 			var layerName = result.layerName;
 
-			if (layerName === "OG_WELLS") {
+			if (layerName === "Oil and Gas Wells") {
 				var ogWellsTemplate = new PopupTemplate( {
-					title: "<span class='pu-title'>Well: {WELL_LABEL} </span><span class='pu-note'>{API_NUMBER}</span>",
-					content: wellContent(feature)
+					title: "<span class='pu-title'>{WELL_LABEL} </span><span class='pu-note'>{API_NUMBER}</span>",
+					content: ogWellContent(feature)
 				} );
 				feature.popupTemplate = ogWellsTemplate;
-			} else if (layerName === "WWC5 Wells") {
-				if (feature.attributes.MONITORING_NUMBER !== " ") {
-					var theTitle = feature.attributes.MONITORING_NUMBER + " - " + feature.attributes.OWNER_NAME + " - " + feature.attributes.STATUS;
-				} else {
-					var theTitle = feature.attributes.OWNER_NAME + " - " + feature.attributes.STATUS;
-				}
+			} else if (layerName === "WWC5 Water Wells") {
 				var wwc5Template = new PopupTemplate( {
-					title: theTitle,
+					title: "WATER WELL - {OWNER_NAME}",
 					content: wwc5Content(feature)
 				} );
 				feature.popupTemplate = wwc5Template;
+			} else if (layerName === "Oil and Gas Fields") {
+				var ogFieldTemplate = new PopupTemplate( {
+					title: "FIELD - {FIELD_NAME}",
+					content: ogFieldContent(feature)
+				} );
+				feature.popupTemplate = ogFieldTemplate;
 			}
 			return feature;
 		} );
 	}
 
 
+	function ogWellContent(feature) {
+		var f = feature.attributes;
+
+		var nsDir = f.FEET_NORTH_FROM_REFERENCE < 0 ? "South" : "North";
+		var ewDir = f.FEET_EAST_FROM_REFERENCE < 0 ? "West" : "East";
+		if (f.FEET_NORTH_FROM_REFERENCE !== "" && f.FEET_EAST_FROM_REFERENCE !== "") {
+			var footages = Math.abs(f.FEET_NORTH_FROM_REFERENCE) + " " + nsDir + ", " + Math.abs(f.FEET_EAST_FROM_REFERENCE) + " " + ewDir + " from " + f.REFERENCE_CORNER + " corner";
+		} else {
+			var footages = "";
+		}
+
+		if (f.ELEVATION_KB != "") {
+			var elev = f.ELEVATION_KB + " KB";
+		} else if (f.ELEVATION_DF != "") {
+			var elev = f.ELEVATION_DF + " DF";
+		} else if (f.ELEVATION_GL != "") {
+			var elev = f.ELEVATION_GL + " GL";
+		} else if (f.ELEVATION != "") {
+			var elev = f.ELEVATION + " Est.";
+		} else {
+			var elev = "";
+		}
+
+		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;ogwell&quot;);' title='View Full KGS Databasse Record'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span>";
+		content += "<table id='popup-tbl'><tr><td>API:</td><td>{API_NUMBER}</td></tr>";
+		content += "<tr><td>Lease:</td><td style='white-space:normal'>{LEASE_NAME}</td></tr>";
+		content += "<tr><td>Well:</td><td>{WELL_NAME}</td></tr>";
+		content += "<tr><td>Well Type:</td><td>{STATUS}</td></tr>";
+		content += "<tr><td>Status:</td><td>{WELL_CLASS}</td></tr>";
+		content += "<tr><td>Original Operator:</td><td>{OPERATOR_NAME}</td></tr>";
+		content += "<tr><td>Current Operator:</td><td>{CURR_OPERATOR}</td></tr>";
+        content += "<tr><td>Field Name:</td><td>{FIELD_NAME}</td></tr>";
+        content += "<tr><td>Location:</td><td>T{TOWNSHIP}{TOWNSHIP_DIRECTION} R{RANGE}{RANGE_DIRECTION} Sec {SECTION}, {SPOT} {SUBDIVISION_4_SMALLEST} {SUBDIVISION_3} {SUBDIVISION_2} {SUBDIVISION_1_LARGEST}</td></tr>";
+        content += "<tr><td>Footages:</td><td>" + footages + "</td></tr>";
+		content += "<tr><td>Latitude, Longitude (NAD27):</td><td>{NAD27_LATITUDE},&nbsp;&nbsp;{NAD27_LONGITUDE}</td></tr>";
+		// content += "<tr><td>Lat-Lon Source:</td><td>{LONGITUDE_LATITUDE_SOURCE}</td></tr></table>";
+        content += "<tr><td>County:</td><td>{COUNTY}</td></tr>";
+		content += "<tr><td>Permit Date:</td><td>{PERMIT_DATE_TXT}</td></tr>";
+		content += "<tr><td>Spud Date:</td><td>{SPUD_DATE_TXT}</td></tr>";
+		content += "<tr><td>Completion Date:</td><td>{COMPLETION_DATE_TXT}</td></tr>";
+		content += "<tr><td>Plug Date:</td><td>{PLUG_DATE_TXT}</td></tr>";
+		content += "<tr><td>Total Depth:</td><td>{ROTARY_TOTAL_DEPTH}</td></tr>";
+		content += "<tr><td>Elevation:</td><td>" + elev + "</td></tr>";
+		content += "<tr><td>Producing Formation:</td><td>{PRODUCING_FORMATION}</td></tr>";
+		content += "<tr><td>Well KID:</td><td id='well-kid'>{KID}</td></tr>";
+		content += "</table>";
+
+        return content;
+    }
+
+
+	function ogFieldContent(feature) {
+		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;field&quot;);' title='View KGS Field Production Page'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span>";
+		content += "<table id='popup-tbl'><tr><td>Field Name:</td><td>{FIELD_NAME}</td></tr>";
+		content += "<tr><td>Status:</td><td style='white-space:normal'>{STATUS}</td></tr>";
+		content += "<tr><td>Type of Field:</td><td style='white-space:normal'>{FIELD_TYPE}</td></tr>";
+		content += "<tr><td>Produces Oil:</td><td style='white-space:normal'>{PROD_OIL}</td></tr>";
+		content += "<tr><td>Produces Gas:</td><td style='white-space:normal'>{PROD_GAS}</td></tr>";
+		content += "<tr><td>Producing Formations:</td><td style='white-space:normal'>{FORMATIONS}</td></tr>";
+		content += "<tr><td>Field KID:</td><td id='field-kid' style='white-space:normal'>{FIELD_KID}</td></tr>";
+		content += "</table>";
+
+        return content;
+    }
+
+
     function wwc5Content(feature) {
-		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo();' title='View Full KGS Databasse Record'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span><span class='esri-icon-documentation pu-icon' onclick='showWwc5Scan();' title='View Scanned WWC5 Form'></span>";
+		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;wwc5&quot;);' title='View Full KGS Databasse Record'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span><span class='esri-icon-documentation pu-icon' onclick='showWwc5Scan();' title='View Scanned WWC5 Form'></span>";
 		content += "<table id='popup-tbl'>";
 		content += "<tr><td>Owner:</td><td>{OWNER_NAME}</td></tr>";
 		content += "<tr><td>Use:</td><td style='white-space:normal'>{USE_DESC}</td></tr>";
