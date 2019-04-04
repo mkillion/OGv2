@@ -340,7 +340,7 @@ function(
         identifyParams = new IdentifyParameters();
 		identifyParams.returnGeometry = true;
         identifyParams.tolerance = (isMobile) ? 9 : 4;
-        identifyParams.layerIds = [0,4,5];
+        identifyParams.layerIds = [0,4];
         identifyParams.layerOption = "visible";
         identifyParams.width = view.width;
         identifyParams.height = view.height;
@@ -1865,8 +1865,10 @@ function(
 		identifyParams.layerDefinitions = idDef;
         dom.byId("mapDiv").style.cursor = "wait";
 		userDefinedPoint = new Graphic();
+		console.log("a");
 
         identifyTask.execute(identifyParams).then(function(response) {
+			console.log("b");
 			return addPopupTemplate(response.results);
         } ).then(function(feature) {
 			if (feature.length > 0) {
