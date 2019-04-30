@@ -562,8 +562,8 @@ function(
     $(".esri-icon-erase").click(function() {
 		graphicsLayer.removeAll();
 		drawingLayer.removeAll();
-		clearWWC5Buffer();
-		clearWWC5BufferControls();
+		clearBuffer();
+		clearBufferControls();
 		clearWWC5Filter();
 		distanceWidget.viewModel.clearMeasurement();
 		areaWidget.viewModel.clearMeasurement();
@@ -757,8 +757,7 @@ function(
 
 	bufferFeature = function() {
 		graphicsLayer.remove(bufferGraphic);
-		clearWWC5Buffer();
-
+		clearBuffer();
 		var buffDist = dom.byId("buff-dist").value;
 
 		if (view.popup.selectedFeature) {
@@ -827,6 +826,7 @@ function(
 			symbol: fillSymbol
 		} );
 		graphicsLayer.add(bufferGraphic);
+		graphicsLayer.visible = true;
 
 		view.goTo( {
 			target: buffPoly.extent,
@@ -895,16 +895,10 @@ function(
 			comboWhere = "";
 		}
 
-		wwc5Layer.findSublayerById(3).definitionExpression = comboWhere;
-		wwc5Layer.findSublayerById(12).definitionExpression = comboWhere;
-		wwc5Layer.findSublayerById(13).definitionExpression = comboWhere;
-		wwc5Layer.findSublayerById(14).definitionExpression = comboWhere;
-		wwc5Layer.findSublayerById(15).definitionExpression = comboWhere;
-		idDef[3] = comboWhere;
-		idDef[12] = comboWhere;
-		idDef[13] = comboWhere;
-		idDef[14] = comboWhere;
-		idDef[15] = comboWhere;
+		wwc5Layer.findSublayerById(4).definitionExpression = comboWhere;
+		idDef[4] = comboWhere;
+		ogLayer.findSublayerById(0).definitionExpression = comboWhere;
+		idDef[0] = comboWhere;
 	}
 
 
@@ -992,7 +986,6 @@ function(
 
 
     function highlightFeature(features) {
-		///graphicsLayer.removeAll();
 		graphicsLayer.remove(hilite);
         var f = features[0] ? features[0] : features;
         switch (f.geometry.type) {
@@ -1027,6 +1020,7 @@ function(
 			symbol: sym
 		} );
 		graphicsLayer.add(hilite);
+		graphicsLayer.visible = true;
     }
 
 
@@ -1055,21 +1049,22 @@ function(
 
                 if (dom.byId("sec").value !== "") {
                     plssText = "S" + dom.byId("sec").value + "-T" + dom.byId("twn").value + "S-R" + dom.byId("rng").value + dir;
-                    findParams.layerIds = [1];
+                    findParams.layerIds = [2];
                     findParams.searchFields = ["s_r_t"];
                 }
                 else {
                     plssText = "T" + dom.byId("twn").value + "S-R" + dom.byId("rng").value + dir;
-                    findParams.layerIds = [2];
+                    findParams.layerIds = [3];
                     findParams.searchFields = ["t_r"];
                 }
                 findParams.searchText = plssText;
                 break;
             case "county":
-                findParams.layerIds = [0];
+                findParams.layerIds = [1];
                 findParams.searchFields = ["county"];
                 findParams.searchText = dom.byId("lstCounty").value;
                 break;
+			// TODO: rework below for og KID:
 			case "kgsnum":
 				findParams.layerIds = [3];
 				findParams.searchFields = ["input_seq_number"];
@@ -1368,14 +1363,16 @@ function(
         content += "<div class='find-header esri-icon-right-triangle-arrow' id='buff-tool'><span class='find-hdr-txt tools-txt'> Buffer / Radius</span></div>";
 		content += "<div class='find-body hide' id='find-buff-tool'>";
 		var units = ["feet","yards","meters","kilometers","miles"];
-		content += "<table><tr><td class='find-label'>Distance:</td><td><input type='text' size='4' id='buff-dist'></td></tr>";
-		content += "<tr><td class='find-label'>Units:</td><td><select id='buff-units'>";
+		content += "<table><tr><td>Distance: <input type='text' size='6' class='buff-input' id='buff-dist'></td></tr>";
+		content += "<tr><td>Units: <select class='buff-input' id='buff-units'>";
 		for (var j = 0; j < units.length; j++) {
 			content += "<option value='" + units[j] + "'>" + units[j] + "</option>";
 		}
 		content += "</select></td></tr>";
-		content += "<tr><td colspan='2'><input type='checkbox' id='sel-buff-wells'> Select wells inside buffer</td></tr>";
-		content += "<tr><td colspan='2'><button class='find-button' onclick='bufferFeature()'>Create Buffer</button><button class='find-button' onclick='clearWWC5Buffer();clearWWC5BufferControls();'>Reset</button></td></tr></table>";
+		content += "<tr><td colspan='2'>Select<span class='note'>(optional)</span>:</td></tr>";
+		content += "<tr><td colspan='2'><input type='checkbox' class='buff-input' id='sel-og-wells'>Oil and gas wells inside buffer</td></tr>";
+		content += "<tr><td colspan='2'><input type='checkbox' class='buff-input' id='sel-wwc5-wells'>Water wells inside buffer</td></tr>";
+		content += "<tr><td colspan='2'><button class='find-button' onclick='bufferFeature()'>Create Buffer</button><button class='find-button' onclick='clearBuffer();clearBufferControls();'>Reset</button></td></tr></table>";
 		content += "<span class='note'>Create a point to buffer by either:<ul><li>Selecting a well, or</li><li>Double-clicking on the map, or</li><li>Searching for an adress</li></ul></span>";
 		content += "</div>";	// end buffer div.
 		// classify:
@@ -1519,38 +1516,24 @@ function(
 		$("#from-date, #to-date, #license").val("");
 		attrWhere = "";
 		comboWhere = "";
-		wwc5Layer.findSublayerById(3).definitionExpression = "";
-		wwc5Layer.findSublayerById(12).definitionExpression = "";
-		wwc5Layer.findSublayerById(13).definitionExpression = "";
-		wwc5Layer.findSublayerById(14).definitionExpression = "";
-		wwc5Layer.findSublayerById(15).definitionExpression = "";
-		idDef[3] = "";
-		idDef[12] = "";
-		idDef[13] = "";
-		idDef[14] = "";
-		idDef[15] = "";
+		wwc5Layer.findSublayerById(4).definitionExpression = "";
+		idDef[4] = "";
 		identifyParams.layerDefinitions = idDef;
 	}
 
 
-	clearWWC5Buffer = function() {
+	clearBuffer = function() {
 		geomWhere = "clear";
-		wwc5Layer.findSublayerById(3).definitionExpression = "";
-		wwc5Layer.findSublayerById(12).definitionExpression = "";
-		wwc5Layer.findSublayerById(13).definitionExpression = "";
-		wwc5Layer.findSublayerById(14).definitionExpression = "";
-		wwc5Layer.findSublayerById(15).definitionExpression = "";
-		idDef[3] = "";
-		idDef[12] = "";
-		idDef[13] = "";
-		idDef[14] = "";
-		idDef[15] = "";
+		wwc5Layer.findSublayerById(4).definitionExpression = "";
+		idDef[4] = "";
+		ogLayer.findSublayerById(0).definitionExpression = "";
+		idDef[0] = "";
 		identifyParams.layerDefinitions = idDef;
 		graphicsLayer.removeAll();
 	}
 
 
-	clearWWC5BufferControls = function() {
+	clearBufferControls = function() {
 		$("#sel-buff-wells").removeAttr("checked");
 		$("#buff-dist").val("");
 		$("#buff-units").prop("selectedIndex",0);

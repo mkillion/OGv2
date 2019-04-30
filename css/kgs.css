@@ -18,6 +18,10 @@ th, td {
     padding: 3px;
 }
 
+.buff-input {
+	margin-left: 17px;
+}
+
 .esri-icon-table,
 .esri-icon-contact,
 .esri-icon-documentation,
