@@ -106,7 +106,7 @@ function(
 	var urlParams, hilite, bufferGraphic;
 	var userDefinedPoint = new Graphic();
 	var homeExtent;
-	var attrWhere, geomWhere, comboWhere;
+	var attrWhere, wwc5GeomWhere, comboWhere;
 	var extentDiv = dom.byId("extentDiv");
 
     // Set up basic frame:
@@ -589,7 +589,7 @@ function(
 
 	function selectFeatures(drawGeom) {
 		if ( $("#draw-select-chk").is(":checked") ) {
-			createGeomWhere(drawGeom);
+			createWWC5GeomWhere(drawGeom);
 			setTimeout(waitForGeomWheres(), 100);
 		}
 	}
@@ -833,40 +833,42 @@ function(
 			scale: 18000
 		}, {duration: 500} );
 
-		if ( $("#sel-buff-wells").is(":checked") ) {
-			createGeomWhere(buffPoly);
+		if ( $("#sel-wwc5-wells").is(":checked") ) {
+			createWWC5GeomWhere(buffPoly);
 			setTimeout(waitForGeomWheres(), 100);
 		}
 	}
 
 
-	function createGeomWhere(geom) {
+	function createWWC5GeomWhere(geom) {
 		var qt = new QueryTask();
 		var qry = new Query();
-		geomWhere = "";
-		// TODO: rework next line for og service and wwc5 if that is to be included too.
-		qt.url = wwc5GeneralServiceURL + "/3";
+		wwc5GeomWhere = "";
+
+		qt.url = ogGeneralServiceURL + "/4";
 		qry.geometry = geom;
+		qry.returnGeometry = true;
 		qt.executeForIds(qry).then(function(ids) {
 			var chunk;
-			geomWhere = "objectid in";
+			wwc5GeomWhere = "objectid in";
 
 			while (ids.length > 0) {
 				chunk = ids.splice(0,1000);
 				chunk = " (" + chunk.join(",") + ") or objectid in";
-				geomWhere += chunk;
+				wwc5GeomWhere += chunk;
 			}
-			if (geomWhere.substr(geomWhere.length - 2) === "in") {
-				geomWhere = geomWhere.slice(0,geomWhere.length - 15);
+
+			if (wwc5GeomWhere.substr(wwc5GeomWhere.length - 2) === "in") {
+				wwc5GeomWhere = wwc5GeomWhere.slice(0,wwc5GeomWhere.length - 15);
 			}
 		} );
 
-		return geomWhere;
+		return wwc5GeomWhere;
 	}
 
 
 	function waitForGeomWheres() {
-		if (geomWhere !== "") {
+		if (wwc5GeomWhere !== "") {
 			applyDefExp();
 		} else {
 			setTimeout(waitForGeomWheres, 100);
@@ -877,28 +879,28 @@ function(
 	function applyDefExp() {
 		comboWhere = "";
 
-		if (geomWhere === "clear") {
+		if (wwc5GeomWhere === "clear") {
 			// Means form has been reset to defaults.
-			geomWhere = "";
+			wwc5GeomWhere = "";
 		}
 
-		if (attrWhere && geomWhere) {
-			comboWhere = attrWhere + " and (" + geomWhere + ")";
+		if (attrWhere && wwc5GeomWhere) {
+			comboWhere = attrWhere + " and (" + wwc5GeomWhere + ")";
 		}
-		if (attrWhere && !geomWhere) {
+		if (attrWhere && !wwc5GeomWhere) {
 			comboWhere = attrWhere;
 		}
-		if (!attrWhere && geomWhere) {
-			comboWhere = geomWhere;
+		if (!attrWhere && wwc5GeomWhere) {
+			comboWhere = wwc5GeomWhere;
 		}
-		if (!attrWhere && !geomWhere) {
+		if (!attrWhere && !wwc5GeomWhere) {
 			comboWhere = "";
 		}
 
 		wwc5Layer.findSublayerById(4).definitionExpression = comboWhere;
 		idDef[4] = comboWhere;
-		ogLayer.findSublayerById(0).definitionExpression = comboWhere;
-		idDef[0] = comboWhere;
+		// ogLayer.findSublayerById(0).definitionExpression = comboWhere;
+		// idDef[0] = comboWhere;
 	}
 
 
@@ -1523,7 +1525,7 @@ function(
 
 
 	clearBuffer = function() {
-		geomWhere = "clear";
+		wwc5GeomWhere = "clear";
 		wwc5Layer.findSublayerById(4).definitionExpression = "";
 		idDef[4] = "";
 		ogLayer.findSublayerById(0).definitionExpression = "";
@@ -1534,7 +1536,8 @@ function(
 
 
 	clearBufferControls = function() {
-		$("#sel-buff-wells").removeAttr("checked");
+		$("#sel-wwc5-wells").removeAttr("checked");
+		$("#sel-og-wells").removeAttr("checked");
 		$("#buff-dist").val("");
 		$("#buff-units").prop("selectedIndex",0);
 	}
