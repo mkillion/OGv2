@@ -1121,11 +1121,15 @@ function(
                 findParams.searchFields = ["county"];
                 findParams.searchText = dom.byId("lstCounty").value;
                 break;
-			// TODO: rework below for og KID:
-			case "kgsnum":
-				findParams.layerIds = [3];
+			case "kgsnum":	// WWC5 wells
+				findParams.layerIds = [4];
 				findParams.searchFields = ["input_seq_number"];
 				findParams.searchText = dom.byId("kgs-id-num").value;
+				break;
+			case "kgskid":	// oilgas wells
+				findParams.layerIds = [0];
+				findParams.searchFields = ["kid"];
+				findParams.searchText = dom.byId("kgs-kid-num").value;
 				break;
         }
         findTask.execute(findParams).then(function(response) {
@@ -1304,7 +1308,7 @@ function(
 		$("#twn, #rng, #sec, #datum, #lstCounty").prop("selectedIndex", 0);
 		$("#rngdir-w").prop("checked", "checked");
 		$("[name=welltype]").filter("[value='none']").prop("checked",true);
-		$("#api_state, #api_county, #api_number, #api_extension, #lat, #lon, #field-select, #kgs-id-num").val("");
+		$("#api_state, #api_county, #api_number, #api_extension, #lat, #lon, #field-select, #kgs-kid-num, #kgs-id-num").val("");
 	}
 
 
@@ -1378,10 +1382,16 @@ function(
         content += "</select><span class='toc-note'>(optional)</td></tr>";
         content += "<tr><td></td><td><button class='find-button' onclick=findIt('plss')>Find</button></td></tr>";
         content += "</table></div>";
-		// KGS ID:
-		content += "<div class='find-header esri-icon-right-triangle-arrow' id='kgsid'><span class='find-hdr-txt'> KGS ID Number</span></div>";
+		// KGS OG WELL KID:
+		content += "<div class='find-header esri-icon-right-triangle-arrow' id='kgskid'><span class='find-hdr-txt'> KGS Well KID Number</span></div>";
+        content += "<div class='find-body hide' id='find-kgskid'>";
+        content += "KGS KID Number: <input type='text' id='kgs-kid-num' size='12' />";
+		content += "<button class='find-button' onclick=findIt('kgskid')>Find</button>";
+        content += "</div>";
+		// KGS WWC5 ID:
+		content += "<div class='find-header esri-icon-right-triangle-arrow' id='kgsid'><span class='find-hdr-txt'> KGS Water Well ID Number</span></div>";
         content += "<div class='find-body hide' id='find-kgsid'>";
-        content += "KGS ID Number: <input type='text' id='kgs-id-num' size='8' />";
+        content += "KGS WWC5 ID Number: <input type='text' id='kgs-id-num' size='8' />";
 		content += "<button class='find-button' onclick=findIt('kgsnum')>Find</button>";
         content += "</div>";
         // lat-lon:
