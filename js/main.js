@@ -106,7 +106,7 @@ function(
 	var urlParams, hilite, bufferGraphic;
 	var userDefinedPoint = new Graphic();
 	var homeExtent;
-	var attrWhere, wwc5GeomWhere, comboWhere;
+	var attrWhere, wwc5GeomWhere, ogGeomWhere, wwc5ComboWhere, ogComboWhere;
 	var extentDiv = dom.byId("extentDiv");
 
     // Set up basic frame:
@@ -837,6 +837,11 @@ function(
 			createWWC5GeomWhere(buffPoly);
 			setTimeout(waitForGeomWheres(), 100);
 		}
+
+		if ( $("#sel-og-wells").is(":checked") ) {
+			createOGWellsGeomWhere(buffPoly);
+			setTimeout(waitForGeomWheres(), 100);
+		}
 	}
 
 
@@ -867,8 +872,35 @@ function(
 	}
 
 
+	function createOGWellsGeomWhere(geom) {
+		var qt = new QueryTask();
+		var qry = new Query();
+		ogGeomWhere = "";
+
+		qt.url = ogGeneralServiceURL + "/0";
+		qry.geometry = geom;
+		qry.returnGeometry = true;
+		qt.executeForIds(qry).then(function(ids) {
+			var chunk;
+			ogGeomWhere = "objectid in";
+
+			while (ids.length > 0) {
+				chunk = ids.splice(0,1000);
+				chunk = " (" + chunk.join(",") + ") or objectid in";
+				ogGeomWhere += chunk;
+			}
+
+			if (ogGeomWhere.substr(ogGeomWhere.length - 2) === "in") {
+				ogGeomWhere = ogGeomWhere.slice(0,ogGeomWhere.length - 15);
+			}
+		} );
+
+		return ogGeomWhere;
+	}
+
+
 	function waitForGeomWheres() {
-		if (wwc5GeomWhere !== "") {
+		if (wwc5GeomWhere !== "" && ogGeomWhere !== "") {
 			applyDefExp();
 		} else {
 			setTimeout(waitForGeomWheres, 100);
@@ -877,30 +909,53 @@ function(
 
 
 	function applyDefExp() {
-		comboWhere = "";
+		wwc5ComboWhere = "";
+		ogComboWhere = "";
 
+		// WWC5 wells:
 		if (wwc5GeomWhere === "clear") {
 			// Means form has been reset to defaults.
 			wwc5GeomWhere = "";
 		}
 
 		if (attrWhere && wwc5GeomWhere) {
-			comboWhere = attrWhere + " and (" + wwc5GeomWhere + ")";
+			wwc5ComboWhere = attrWhere + " and (" + wwc5GeomWhere + ")";
 		}
 		if (attrWhere && !wwc5GeomWhere) {
-			comboWhere = attrWhere;
+			wwc5ComboWhere = attrWhere;
 		}
 		if (!attrWhere && wwc5GeomWhere) {
-			comboWhere = wwc5GeomWhere;
+			wwc5ComboWhere = wwc5GeomWhere;
 		}
 		if (!attrWhere && !wwc5GeomWhere) {
-			comboWhere = "";
+			wwc5ComboWhere = "";
 		}
 
-		wwc5Layer.findSublayerById(4).definitionExpression = comboWhere;
-		idDef[4] = comboWhere;
-		// ogLayer.findSublayerById(0).definitionExpression = comboWhere;
-		// idDef[0] = comboWhere;
+		wwc5Layer.findSublayerById(4).definitionExpression = wwc5ComboWhere;
+		idDef[4] = wwc5ComboWhere;
+
+		// OG wells:
+		if (ogGeomWhere === "clear") {
+			// Means form has been reset to defaults.
+			ogGeomWhere = "";
+		}
+
+		if (attrWhere && ogGeomWhere) {
+			ogComboWhere = attrWhere + " and (" + ogGeomWhere + ")";
+		}
+		if (attrWhere && !ogGeomWhere) {
+			ogComboWhere = attrWhere;
+		}
+		if (!attrWhere && ogGeomWhere) {
+			ogComboWhere = ogGeomWhere;
+		}
+		if (!attrWhere && !ogGeomWhere) {
+			ogComboWhere = "";
+		}
+
+		ogLayer.findSublayerById(0).definitionExpression = ogComboWhere;
+		idDef[0] = ogComboWhere;
+
 	}
 
 
@@ -1526,6 +1581,7 @@ function(
 
 	clearBuffer = function() {
 		wwc5GeomWhere = "clear";
+		ogGeomWhere = "clear";
 		wwc5Layer.findSublayerById(4).definitionExpression = "";
 		idDef[4] = "";
 		ogLayer.findSublayerById(0).definitionExpression = "";
