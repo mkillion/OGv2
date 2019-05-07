@@ -660,6 +660,20 @@ function(
 			width: 375,
 			closeText: ""
         } );
+
+		// "Not Found" dialog:
+		var notFoundDia = "<div>This search did not return any features.<br>Please check your entries and try again.</div>";
+
+		var nfN = domConstruct.create("div", { id: "notfound-dia", class: "filter-dialog", innerHTML: notFoundDia } );
+        $("body").append(nfN);
+
+        $("#notfound-dia").dialog( {
+            autoOpen: false,
+            dialogClass: "dialog",
+			title: "Not Found",
+			width: 375,
+			closeText: ""
+        } );
     }
 
 
@@ -1131,6 +1145,31 @@ function(
 				findParams.searchFields = ["kid"];
 				findParams.searchText = dom.byId("kgs-kid-num").value;
 				break;
+			case "api":
+				var stcode = dojo.byId('api_state').value;
+				var cocode = dojo.byId('api_county').value;
+				var apicode = dojo.byId('api_number').value;
+
+				var qt = new QueryTask( {url:"http://services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_v2/MapServer/0"} );
+				var query = new Query();
+    			query.returnGeometry = true;
+    			query.where = "STATE_CODE = " + stcode + " and COUNTY_CODE = " + cocode + " and API_WELL_NUMBER = " + apicode;
+    			query.outFields = ["*"];
+
+    			qt.execute(query).then(function(fset) {
+    				if (fset.features.length === 0) {
+						$("#notfound-dia").dialog("open");
+    				}
+
+					feature = fset.features[0];
+
+					zoomToFeature(feature);
+					return addPopupTemplate(fset.features);
+				} ).then(function(feature) {
+					openPopup(feature);
+				} );
+
+			break;
         }
         findTask.execute(findParams).then(function(response) {
             zoomToFeature(response.results[0].feature);
@@ -1382,6 +1421,15 @@ function(
         content += "</select><span class='toc-note'>(optional)</td></tr>";
         content += "<tr><td></td><td><button class='find-button' onclick=findIt('plss')>Find</button></td></tr>";
         content += "</table></div>";
+		// API NUMBER:
+		content += "<div class='find-header esri-icon-right-triangle-arrow' id='apinum'><span class='find-hdr-txt'> Well API Number</span></div>";
+        content += "<div class='find-body hide' id='find-apinum'>";
+        content += "API Numberg: <span class='note'>(extension optional)</span><br><input type='text' id='api_state' size='2' onKeyUp='jumpFocus(&quot;api_county&quot;, 2, this.id)' value='15'/> - ";
+    	content += "<input type='text' id='api_county' size='3' onKeyUp='jumpFocus(&quot;api_number&quot;, 3, this.id)' /> - ";
+        content += "<input type='text' id='api_number' size='5' onKeyUp='jumpFocus(&quot;api_extension&quot;, 5, this.id)' /> - ";
+    	content += "<input type='text' id='api_extension' size='4' />";
+		content += "<button class='find-button' onclick=findIt('api')>Find</button>";
+        content += "</div>";
 		// KGS OG WELL KID:
 		content += "<div class='find-header esri-icon-right-triangle-arrow' id='kgskid'><span class='find-hdr-txt'> KGS Well KID Number</span></div>";
         content += "<div class='find-body hide' id='find-kgskid'>";
@@ -1956,6 +2004,13 @@ function(
 		return arrayUtils.map(response, function(result) {
 			var feature = result.feature;
 			var layerName = result.layerName;
+
+
+			if ( result.hasOwnProperty('attributes') && result.attributes.hasOwnProperty('API_NUMBER') ) {
+				// Special case when coming from Find By API, which uses a queryTask.
+				layerName = "Oil and Gas Wells";
+				feature = result;
+			}
 
 			if (layerName === "Oil and Gas Wells") {
 				var ogWellsTemplate = new PopupTemplate( {
