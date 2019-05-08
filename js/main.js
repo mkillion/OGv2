@@ -2071,7 +2071,7 @@ function(
         content += "<tr><td>Location:</td><td>T{TOWNSHIP}{TOWNSHIP_DIRECTION} R{RANGE}{RANGE_DIRECTION} Sec {SECTION}, {SPOT} {SUBDIVISION_4_SMALLEST} {SUBDIVISION_3} {SUBDIVISION_2} {SUBDIVISION_1_LARGEST}</td></tr>";
         content += "<tr><td>Footages:</td><td>" + footages + "</td></tr>";
 		content += "<tr><td>Latitude, Longitude (NAD27):</td><td>{NAD27_LATITUDE},&nbsp;&nbsp;{NAD27_LONGITUDE}</td></tr>";
-		// content += "<tr><td>Lat-Lon Source:</td><td>{LONGITUDE_LATITUDE_SOURCE}</td></tr></table>";
+		content += "<tr><td>Lat-Lon Source:</td><td>{LONGITUDE_LATITUDE_SOURCE}</td></tr>";
         content += "<tr><td>County:</td><td>{COUNTY}</td></tr>";
 		content += "<tr><td>Permit Date:</td><td>{PERMIT_DATE_TXT}</td></tr>";
 		content += "<tr><td>Spud Date:</td><td>{SPUD_DATE_TXT}</td></tr>";
