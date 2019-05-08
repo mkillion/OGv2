@@ -2047,13 +2047,13 @@ function(
 			var footages = "";
 		}
 
-		if (f.ELEVATION_KB != "") {
+		if (f.ELEVATION_KB != "" && f.ELEVATION_KB != "Null") {
 			var elev = f.ELEVATION_KB + " KB";
-		} else if (f.ELEVATION_DF != "") {
+		} else if (f.ELEVATION_DF != "" && f.ELEVATION_DF != "Null") {
 			var elev = f.ELEVATION_DF + " DF";
-		} else if (f.ELEVATION_GL != "") {
+		} else if (f.ELEVATION_GL != "" && f.ELEVATION_GL != "Null") {
 			var elev = f.ELEVATION_GL + " GL";
-		} else if (f.ELEVATION != "") {
+		} else if (f.ELEVATION != "" && f.ELEVATION != "Null") {
 			var elev = f.ELEVATION + " Est.";
 		} else {
 			var elev = "";
