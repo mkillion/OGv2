@@ -455,32 +455,49 @@ function(
         // Update the minimap overview when the main view becomes stationary
         watchUtils.when(view, "stationary", updateOverview);
 
-        function updateOverview() {
-          // Animate the MapView to a zoomed-out scale so we get a nice overview.
-          // We use the "progress" callback of the goTo promise to update
-          // the overview extent while animating
-          ovView.goTo( {
-            center: view.center,
-            scale: view.scale * 5 * Math.max(view.width /
-              ovView.width,
-              view.height / ovView.height)
-          } );
-        }
+		function updateOverview() {
+            // Animate the MapView to a zoomed-out scale so we get a nice overview.
+            // We use the "progress" callback of the goTo promise to update
+            // the overview extent while animating
+            ovView.goTo({
+              center: view.center,
+              scale:
+                view.scale *
+                5 *
+                Math.max(
+                  view.width / view.width,
+                  view.height / view.height
+                )
+            });
+          }
 
 		function updateOverviewExtent() {
-          // Update the overview extent by converting the SceneView extent to the
-          // MapView screen coordinates and updating the extentDiv position.
-          var extent = view.extent;
+		   // Update the overview extent by converting the SceneView extent to the
+		   // MapView screen coordinates and updating the extentDiv position.
+		   var extent = view.extent;
 
-          var bottomLeft = ovView.toScreen(extent.xmin, extent.ymin);
-          var topRight = ovView.toScreen(extent.xmax, extent.ymax);
+		   var bottomLeft = ovView.toScreen(
+			 new Point({
+			   x: extent.xmin,
+			   y: extent.ymin,
+			   spatialReference: extent.spatialReference
+			 })
+		   );
 
-          extentDiv.style.top = topRight.y + "px";
-          extentDiv.style.left = bottomLeft.x + "px";
+		   var topRight = ovView.toScreen(
+			 new Point({
+			   x: extent.xmax,
+			   y: extent.ymax,
+			   spatialReference: extent.spatialReference
+			 })
+		   );
 
-          extentDiv.style.height = (bottomLeft.y - topRight.y) + "px";
-          extentDiv.style.width = (topRight.x - bottomLeft.x) + "px";
-        }
+		   extentDiv.style.top = topRight.y + "px";
+		   extentDiv.style.left = bottomLeft.x + "px";
+
+		   extentDiv.style.height = bottomLeft.y - topRight.y + "px";
+		   extentDiv.style.width = topRight.x - bottomLeft.x + "px";
+		 }
 	} );
 
 	var searchWidget = new Search({
