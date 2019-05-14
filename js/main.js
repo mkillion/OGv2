@@ -143,6 +143,17 @@ function(
 
     // Combo boxes:
     var autocomplete =  (isMobile) ? false : true; // auto-complete doesn't work properly on mobile (gets stuck on a name and won't allow further typing), so turn it off.
+	$.get("fields_json.txt", function(response) {
+		// fields_json.txt is updated as part of the og fields update process.
+        var fieldNames = JSON.parse(response).items;
+        var fieldStore = new Memory( {data: fieldNames} );
+        var comboBox = new ComboBox( {
+            id: "field-select",
+            store: fieldStore,
+            searchAttr: "name",
+            autoComplete: autocomplete
+        }, "field-select").startup();
+    } );
 
     // End framework.
 
@@ -1068,6 +1079,7 @@ function(
             view.scale = 24000;
 		} else {
 			view.extent = f.geometry.extent;
+			view.zoom = view.zoom - 1;
 		}
 		highlightFeature(f);
     }
@@ -1162,6 +1174,13 @@ function(
 				findParams.searchFields = ["kid"];
 				findParams.searchText = dom.byId("kgs-kid-num").value;
 				break;
+			case "field":
+				findParams.layerIds = [5];
+				findParams.searchFields = ["field_name"];
+				findParams.searchText = dom.byId("field-select").value;
+				fieldsLayer.visible = true;
+                $("#Oil-and-Gas-Fields input").prop("checked", true);
+				break;
 			case "api":
 				var stcode = dojo.byId('api_state').value;
 				var cocode = dojo.byId('api_county').value;
@@ -1192,7 +1211,7 @@ function(
             zoomToFeature(response.results[0].feature);
 			return addPopupTemplate(response.results);
         } ).then(function(feature) {
-			if (what === "kgsnum") {
+			if (what === "kgsnum" || what === "field" || what === "kgskid") {
 				openPopup(feature);
 			}
 		} );
@@ -1441,12 +1460,25 @@ function(
 		// API NUMBER:
 		content += "<div class='find-header esri-icon-right-triangle-arrow' id='apinum'><span class='find-hdr-txt'> Well API Number</span></div>";
         content += "<div class='find-body hide' id='find-apinum'>";
-        content += "API Numberg: <span class='note'>(extension optional)</span><br><input type='text' id='api_state' size='2' onKeyUp='jumpFocus(&quot;api_county&quot;, 2, this.id)' value='15'/> - ";
+        content += "API Number: <span class='note'>(extension optional)</span><br><input type='text' id='api_state' size='2' onKeyUp='jumpFocus(&quot;api_county&quot;, 2, this.id)' value='15'/> - ";
     	content += "<input type='text' id='api_county' size='3' onKeyUp='jumpFocus(&quot;api_number&quot;, 3, this.id)' /> - ";
         content += "<input type='text' id='api_number' size='5' onKeyUp='jumpFocus(&quot;api_extension&quot;, 5, this.id)' /> - ";
     	content += "<input type='text' id='api_extension' size='4' />";
 		content += "<button class='find-button' onclick=findIt('api')>Find</button>";
         content += "</div>";
+		// WELL NAME:
+		content += "<div class='find-header esri-icon-right-triangle-arrow' id='wellname'><span class='find-hdr-txt'> Well Name</span></div>";
+        content += "<div class='find-body hide' id='find-wellname'>";
+        content += "Well Name: <input type='text' id='well-name' size='12'>";
+		content += "<button class='find-button' onclick=findIt('wellname')>Find</button>";
+        content += "</div>";
+		// FIELD:
+        content += '<div class="find-header esri-icon-right-triangle-arrow" id="field"><span class="find-hdr-txt"> Field</span></div>';
+        content += '<div class="find-body hide" id="find-field">';
+        content += '<table><tr><td class="find-label">Name:</td><td><input id="field-select" size="14"></td></tr>';
+		// content += '<tr><td colspan="2"><input type="checkbox" id="field-list-wells">List wells assigned to this field</td></tr>';
+		content += '<tr><td></td><td><button class=find-button onclick=findIt("field")>Find</button></td></tr></table>';
+        content += '</div>';
 		// KGS OG WELL KID:
 		content += "<div class='find-header esri-icon-right-triangle-arrow' id='kgskid'><span class='find-hdr-txt'> KGS Well KID Number</span></div>";
         content += "<div class='find-body hide' id='find-kgskid'>";
@@ -1507,16 +1539,6 @@ function(
 		content += "<tr><td colspan='2'><button class='find-button' onclick='bufferFeature()'>Create Buffer</button><button class='find-button' onclick='clearBuffer();clearBufferControls();'>Reset</button></td></tr></table>";
 		content += "<span class='note'>Create a point to buffer by either:<ul><li>Selecting a well, or</li><li>Double-clicking on the map, or</li><li>Searching for an adress</li></ul></span>";
 		content += "</div>";	// end buffer div.
-		// classify:
-        content += "<div class='find-header esri-icon-right-triangle-arrow' id='class-tool'><span class='find-hdr-txt tools-txt'> Classify Wells</span></div>";
-		content += "<div class='find-body hide' id='find-class-tool'>";
-		content += "<table><tr><td colspan='2'>Color code wells by:</td></tr>";
-		content += "<tr><td><label><input type='radio' name='ct' value='dpth'> Completed Well Depth (ft)</label></td></tr>";
-		content += "<tr><td><label><input type='radio' name='ct' value='lvl'> Static Water Level (ft)</label></td></tr>";
-		content += "<tr><td><label><input type='radio' name='ct' value='yld'> Yield (gpm)</label></td></tr>";
-		content += "<tr><td><label><input type='radio' name='ct' value='type'> General Well Type</label></td></tr>";
-		content += "<tr><td><label><input type='radio' name='ct' value='none' checked> No Classification</label></td></tr></table>";
-		content += "</div>";	// end classify div.
 		// Download:
 		content += "<div class='find-header esri-icon-right-triangle-arrow' id='download-tool'><span class='find-hdr-txt tools-txt'> Download Data</span></div>";
 		content += "<div class='find-body hide' id='find-download-tool'>";
