@@ -143,6 +143,7 @@ function(
 
     // Combo boxes:
     var autocomplete =  (isMobile) ? false : true; // auto-complete doesn't work properly on mobile (gets stuck on a name and won't allow further typing), so turn it off.
+
 	$.get("fields_json.txt", function(response) {
 		// fields_json.txt is updated as part of the og fields update process.
         var fieldNames = JSON.parse(response).items;
@@ -154,6 +155,10 @@ function(
             autoComplete: autocomplete
         }, "field-select").startup();
     } );
+
+	$( "#well-name" ).autocomplete({
+  		source: "getWellNames.cfm"
+	} );
 
     // End framework.
 
@@ -1174,6 +1179,11 @@ function(
 				findParams.searchFields = ["kid"];
 				findParams.searchText = dom.byId("kgs-kid-num").value;
 				break;
+			case "wellname":
+				findParams.layerIds = [0];
+				findParams.searchFields = ["well_label"];
+				findParams.searchText = dom.byId("well-name").value;
+				break;
 			case "field":
 				findParams.layerIds = [5];
 				findParams.searchFields = ["field_name"];
@@ -1211,7 +1221,7 @@ function(
             zoomToFeature(response.results[0].feature);
 			return addPopupTemplate(response.results);
         } ).then(function(feature) {
-			if (what === "kgsnum" || what === "field" || what === "kgskid") {
+			if (what === "kgsnum" || what === "field" || what === "kgskid" || what === "wellname") {
 				openPopup(feature);
 			}
 		} );
@@ -1383,7 +1393,7 @@ function(
 		$("#twn, #rng, #sec, #datum, #lstCounty").prop("selectedIndex", 0);
 		$("#rngdir-w").prop("checked", "checked");
 		$("[name=welltype]").filter("[value='none']").prop("checked",true);
-		$("#api_state, #api_county, #api_number, #api_extension, #lat, #lon, #field-select, #kgs-kid-num, #kgs-id-num").val("");
+		$("#api_state, #api_county, #api_number, #api_extension, #well-name, #lat, #lon, #field-select, #kgs-kid-num, #kgs-id-num").val("");
 	}
 
 
@@ -1469,13 +1479,14 @@ function(
 		// WELL NAME:
 		content += "<div class='find-header esri-icon-right-triangle-arrow' id='wellname'><span class='find-hdr-txt'> Well Name</span></div>";
         content += "<div class='find-body hide' id='find-wellname'>";
-        content += "Well Name: <input type='text' id='well-name' size='12'>";
+        content += "Well Name: <input type='text' id='well-name' size='18'><br>";
 		content += "<button class='find-button' onclick=findIt('wellname')>Find</button>";
         content += "</div>";
 		// FIELD:
-        content += '<div class="find-header esri-icon-right-triangle-arrow" id="field"><span class="find-hdr-txt"> Field</span></div>';
+        content += '<div class="find-header esri-icon-right-triangle-arrow" id="field"><span class="find-hdr-txt"> Field Name</span></div>';
         content += '<div class="find-body hide" id="find-field">';
         content += '<table><tr><td class="find-label">Name:</td><td><input id="field-select" size="14"></td></tr>';
+		// TODO: reinstate next line, or add something similar to filter or fields popup.
 		// content += '<tr><td colspan="2"><input type="checkbox" id="field-list-wells">List wells assigned to this field</td></tr>';
 		content += '<tr><td></td><td><button class=find-button onclick=findIt("field")>Find</button></td></tr></table>';
         content += '</div>';
