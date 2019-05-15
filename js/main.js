@@ -142,19 +142,11 @@ function(
 	}
 
     // Combo boxes:
-    var autocomplete =  (isMobile) ? false : true; // auto-complete doesn't work properly on mobile (gets stuck on a name and won't allow further typing), so turn it off.
+    // /var autocomplete =  (isMobile) ? false : true; // auto-complete doesn't work properly on mobile (gets stuck on a name and won't allow further typing), so turn it off.
 
-	$.get("fields_json.txt", function(response) {
-		// fields_json.txt is updated as part of the og fields update process.
-        var fieldNames = JSON.parse(response).items;
-        var fieldStore = new Memory( {data: fieldNames} );
-        var comboBox = new ComboBox( {
-            id: "field-select",
-            store: fieldStore,
-            searchAttr: "name",
-            autoComplete: autocomplete
-        }, "field-select").startup();
-    } );
+	$( "#field-select" ).autocomplete({
+  		source: "getFieldNames.cfm"
+	} );
 
 	$( "#well-name" ).autocomplete({
   		source: "getWellNames.cfm"
@@ -1485,10 +1477,10 @@ function(
 		// FIELD:
         content += '<div class="find-header esri-icon-right-triangle-arrow" id="field"><span class="find-hdr-txt"> Field Name</span></div>';
         content += '<div class="find-body hide" id="find-field">';
-        content += '<table><tr><td class="find-label">Name:</td><td><input id="field-select" size="14"></td></tr>';
+        content += 'Field Name: <input id="field-select" size="18">';
 		// TODO: reinstate next line, or add something similar to filter or fields popup.
 		// content += '<tr><td colspan="2"><input type="checkbox" id="field-list-wells">List wells assigned to this field</td></tr>';
-		content += '<tr><td></td><td><button class=find-button onclick=findIt("field")>Find</button></td></tr></table>';
+		content += '<button class=find-button onclick=findIt("field")>Find</button>';
         content += '</div>';
 		// KGS OG WELL KID:
 		content += "<div class='find-header esri-icon-right-triangle-arrow' id='kgskid'><span class='find-hdr-txt'> KGS Well KID Number</span></div>";

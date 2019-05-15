@@ -1,7 +1,6 @@
 
 <cfset Term = #UCase(url.term)# & "%">
 
-
 <cfquery name="qWellNames" datasource="plss">
     select
         distinct well_label
