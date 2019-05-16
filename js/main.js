@@ -1577,12 +1577,10 @@ function(
 		content += "<div class='find-header esri-icon-right-triangle-arrow' id='label-tool'><span class='find-hdr-txt tools-txt'> Label Wells</span></div>";
 		content += "<div class='find-body hide' id='find-label-tool'>";
 		content += "<table><tr><td colspan='2'>Label wells by:</td></tr>";
-		content += "<tr><td><label><input type='radio' name='labelname' value='OWNER_NAME'> Owner</label></td></tr>";
-		content += "<tr><td><label><input type='radio' name='labelname' value='DEPTH_OF_COMPLETED_WELL'> Completed Depth (ft)</label></td></tr>";
-		content += "<tr><td><label><input type='radio' name='labelname' value='depthyield'> Depth / Yield</label></td></tr>";
-		content += "<tr><td><label><input type='radio' name='labelname' value='ESTIMETED_YIELD'> Yield (gpm)</label></td></tr>";
-		content += "<tr><td><label><input type='radio' name='labelname' value='STATIC_WATER_LEVEL'> Static Water Level (ft)</label></td></tr>";
-		content += "<tr><td><label><input type='radio' name='labelname' value='MONITORING_NUMBER'> Well ID</label></td></tr>";
+		content += "<tr><td><label><input type='radio' name='labelname' value='API_NUMBER'> API Number</label></td></tr>";
+		content += "<tr><td><label><input type='radio' name='labelname' value='WELL_LABEL'> Well Name</label></td></tr>";
+		content += "<tr><td><label><input type='radio' name='labelname' value='PRODUCING_FORMATION'> Producing Formation</label></td></tr>";
+		content += "<tr><td><label><input type='radio' name='labelname' value='COMPLETION_YEAR'> Year of Completion</label></td></tr>";
 		content += "<tr><td><label><input type='radio' name='labelname' value='none' checked> No Labels</label></td></tr></table>";
 		content += "</div>";	// end label div.
 
@@ -1950,33 +1948,29 @@ function(
     labelWells = function() {
 		var lbl = $("input[name=labelname]:checked").val();
 
-		if (wwc5Layer.findSublayerById(3).visible == true) {
-			var theLayer = wwc5Layer.findSublayerById(3);
-		}
-		if (wwc5Layer.findSublayerById(12).visible == true) {
-			var theLayer = wwc5Layer.findSublayerById(12);
-		}
-		if (wwc5Layer.findSublayerById(13).visible == true) {
-			var theLayer = wwc5Layer.findSublayerById(13);
-		}
-		if (wwc5Layer.findSublayerById(14).visible == true) {
-			var theLayer = wwc5Layer.findSublayerById(14);
-		}
-		if (wwc5Layer.findSublayerById(15).visible == true) {
-			var theLayer = wwc5Layer.findSublayerById(15);
-		}
+		// if (wwc5Layer.findSublayerById(3).visible == true) {
+		// 	var theLayer = wwc5Layer.findSublayerById(3);
+		// }
+		// if (wwc5Layer.findSublayerById(12).visible == true) {
+		// 	var theLayer = wwc5Layer.findSublayerById(12);
+		// }
+		// if (wwc5Layer.findSublayerById(13).visible == true) {
+		// 	var theLayer = wwc5Layer.findSublayerById(13);
+		// }
+		// if (wwc5Layer.findSublayerById(14).visible == true) {
+		// 	var theLayer = wwc5Layer.findSublayerById(14);
+		// }
+		// if (wwc5Layer.findSublayerById(15).visible == true) {
+		// 	var theLayer = wwc5Layer.findSublayerById(15);
+		// }
 
 		switch (lbl) {
-			case "depthyield":
-				theLayer.labelingInfo[0].labelExpression = '[DEPTH_OF_COMPLETED_WELL] CONCAT " ft / " CONCAT [ESTIMETED_YIELD] CONCAT " gpm"';
-				theLayer.labelsVisible = true;
-				break;
 			case "none":
-				theLayer.labelsVisible = false;
+				ogLayer.findSublayerById(0).labelsVisible = false;
 				break;
 			default:
-				theLayer.labelingInfo[0].labelExpression = "[" + lbl + "]";
-				theLayer.labelsVisible = true;
+				ogLayer.findSublayerById(0).labelingInfo[0].labelExpression = "[" + lbl + "]";
+				ogLayer.findSublayerById(0).labelsVisible = true;
 		}
 
 		// wwc5Layer.refresh();
