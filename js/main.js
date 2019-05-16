@@ -339,7 +339,7 @@ function(
 		createTOC();
 		createDialogs();
 		setTocPrefs();
-		// setPrefs();
+		setPrefs();
 
         on(view, "click", executeIdTask);
 		on(view, "pointer-move", showCoordinates);
@@ -1559,7 +1559,7 @@ function(
 		content += "<button class='find-button clear-draw-btn' onclick='clearDraw();'>Clear</button>";
 		content += "</div>";	// end draw-select div.
 		// Filter:
-		content += "<div class='find-header esri-icon-right-triangle-arrow' id='filter-tool'><span class='find-hdr-txt tools-txt'> Filter Wells</span></div>";
+		content += "<div class='find-header esri-icon-right-triangle-arrow' id='filter-tool'><span class='find-hdr-txt tools-txt'> Filter Oil and Gas Wells</span></div>";
 		content += "<div class='find-body hide' id='find-filter-tool'>";
 		content += "<table><tr><td colspan='2'>Show Only:</td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-domestic'><span class='filter-tbl'>Domestic Wells</span></label></td></tr>";
@@ -1574,7 +1574,7 @@ function(
 		content += "<tr><td><button class='find-button' onclick='filterWWC5()'>Apply Filter</button><button class='find-button' onclick='clearWWC5Filter()'>Reset</button></td></tr></table>";
 		content += "</div>";	// end filter div.
 		// Label:
-		content += "<div class='find-header esri-icon-right-triangle-arrow' id='label-tool'><span class='find-hdr-txt tools-txt'> Label Wells</span></div>";
+		content += "<div class='find-header esri-icon-right-triangle-arrow' id='label-tool'><span class='find-hdr-txt tools-txt'> Label Oil and Gas Wells</span></div>";
 		content += "<div class='find-body hide' id='find-label-tool'>";
 		content += "<table><tr><td colspan='2'>Label wells by:</td></tr>";
 		content += "<tr><td><label><input type='radio' name='labelname' value='API_NUMBER'> API Number</label></td></tr>";
@@ -1697,59 +1697,59 @@ function(
 	}
 
 
-	classifyWells = function() {
-		// NOTE: using a "swap layers" technique instead of renderers due to a bug in renderer (at 4.7).
-		var classificationType = $("input[name='ct']:checked").val();
-
-		var defaultLyr = wwc5Layer.findSublayerById(3);
-		var depthLyr = wwc5Layer.findSublayerById(12);
-		var levelLyr = wwc5Layer.findSublayerById(13);
-		var yieldLyr = wwc5Layer.findSublayerById(14);
-		var typeLyr = wwc5Layer.findSublayerById(15);
-
-		switch (classificationType) {
-			case "yld":
-				defaultLyr.visible = false;
-				depthLyr.visible = false;
-				levelLyr.visible = false;
-				yieldLyr.visible = true;
-				typeLyr.visible = false;
-				break;
-			case "dpth":
-				defaultLyr.visible = false;
-				depthLyr.visible = true;
-				levelLyr.visible = false;
-				yieldLyr.visible = false;
-				typeLyr.visible = false;
-				break;
-			case "lvl":
-				defaultLyr.visible = false;
-				depthLyr.visible = false;
-				levelLyr.visible = true;
-				yieldLyr.visible = false;
-				typeLyr.visible = false;
-				break;
-			case "type":
-				defaultLyr.visible = false;
-				depthLyr.visible = false;
-				levelLyr.visible = false;
-				yieldLyr.visible = false;
-				typeLyr.visible = true;
-				break;
-			case "none":
-				defaultLyr.visible = true;
-				depthLyr.visible = false;
-				levelLyr.visible = false;
-				yieldLyr.visible = false;
-				typeLyr.visible = false;
-				break;
-		}
-
-		labelWells();
-
-		// Save setting:
-		localStorage.setItem("kgsog_classification", classificationType);
-	}
+	// classifyWells = function() {
+	// 	// NOTE: using a "swap layers" technique instead of renderers due to a bug in renderer (at 4.7).
+	// 	var classificationType = $("input[name='ct']:checked").val();
+	//
+	// 	var defaultLyr = wwc5Layer.findSublayerById(3);
+	// 	var depthLyr = wwc5Layer.findSublayerById(12);
+	// 	var levelLyr = wwc5Layer.findSublayerById(13);
+	// 	var yieldLyr = wwc5Layer.findSublayerById(14);
+	// 	var typeLyr = wwc5Layer.findSublayerById(15);
+	//
+	// 	switch (classificationType) {
+	// 		case "yld":
+	// 			defaultLyr.visible = false;
+	// 			depthLyr.visible = false;
+	// 			levelLyr.visible = false;
+	// 			yieldLyr.visible = true;
+	// 			typeLyr.visible = false;
+	// 			break;
+	// 		case "dpth":
+	// 			defaultLyr.visible = false;
+	// 			depthLyr.visible = true;
+	// 			levelLyr.visible = false;
+	// 			yieldLyr.visible = false;
+	// 			typeLyr.visible = false;
+	// 			break;
+	// 		case "lvl":
+	// 			defaultLyr.visible = false;
+	// 			depthLyr.visible = false;
+	// 			levelLyr.visible = true;
+	// 			yieldLyr.visible = false;
+	// 			typeLyr.visible = false;
+	// 			break;
+	// 		case "type":
+	// 			defaultLyr.visible = false;
+	// 			depthLyr.visible = false;
+	// 			levelLyr.visible = false;
+	// 			yieldLyr.visible = false;
+	// 			typeLyr.visible = true;
+	// 			break;
+	// 		case "none":
+	// 			defaultLyr.visible = true;
+	// 			depthLyr.visible = false;
+	// 			levelLyr.visible = false;
+	// 			yieldLyr.visible = false;
+	// 			typeLyr.visible = false;
+	// 			break;
+	// 	}
+	//
+	// 	labelWells();
+	//
+	// 	// Save setting:
+	// 	localStorage.setItem("kgsog_classification", classificationType);
+	// }
 
 
     showFullInfo = function(type) {
@@ -1893,13 +1893,14 @@ function(
 	function setPrefs() {
 		// Label pref:
 		var lbl = localStorage.getItem("kgsog_label");
+
 		$("input[name=labelname][value='" + lbl + "']").prop("checked",true);
 		labelWells();
 
 		// Classification pref:
-		var cla = localStorage.getItem("kgsog_classification");
-		$("input[name=ct][value='" + cla + "']").prop("checked",true);
-		classifyWells();
+		// var cla = localStorage.getItem("kgsog_classification");
+		// $("input[name=ct][value='" + cla + "']").prop("checked",true);
+		// classifyWells();
 
 		// Bookmarks:
 		$.each(localStorage, function(key, val) {
