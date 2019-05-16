@@ -348,7 +348,7 @@ function(
         identifyParams = new IdentifyParameters();
 		identifyParams.returnGeometry = true;
         identifyParams.tolerance = (isMobile) ? 9 : 4;
-        identifyParams.layerIds = [0,4];
+        identifyParams.layerIds = [0,4,5];
         identifyParams.layerOption = "visible";
         identifyParams.width = view.width;
         identifyParams.height = view.height;
@@ -589,7 +589,7 @@ function(
 		drawingLayer.removeAll();
 		clearBuffer();
 		clearBufferControls();
-		clearWWC5Filter();
+		clearOGFilter();
 		distanceWidget.viewModel.clearMeasurement();
 		areaWidget.viewModel.clearMeasurement();
     } );
@@ -736,7 +736,7 @@ function(
 	}
 
 
-	filterWWC5 = function() {
+	filterOG = function() {
 		var useWhere = "";
 		var drillerWhere = "";
 		var dateWhere = "";
@@ -1002,10 +1002,9 @@ function(
 		dom.byId("mapDiv").style.cursor = "auto";
 		view.popup.features = feature;
 		view.popup.visible = true;
-		// TODO: reinstate next?
-		// if (feature.length > 1) {
-		// 	setTimeout(showPuDownloadIcon, 250);
-		// }
+		if (feature.length > 1) {
+			setTimeout(showPuDownloadIcon, 250);
+		}
     }
 
 
@@ -1526,6 +1525,20 @@ function(
         content += "<div class='panel-container' id='tools-panel'>";
         content += "<div class='panel-header'>Tools <img id='loader' class='hide' src='images/ajax-loader.gif'><span class='esri-icon-erase' title='Clear filters, buffers, graphics, and selected wells'></span></span><span class='esri-icon-question' title='Help'></span></div>";
         content += "<div class='panel-padding'>";
+		// Filter:
+		content += "<div class='find-header esri-icon-right-triangle-arrow' id='filter-tool'><span class='find-hdr-txt tools-txt'> Filter Oil and Gas Wells</span></div>";
+		content += "<div class='find-body hide' id='find-filter-tool'>";
+		content += "<table><tr><td colspan='2'>Show Only:</td></tr>";
+		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-elogs'><span class='filter-tbl'>Wells with Electric Logs</span></label></td></tr>";
+		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-las'><span class='filter-tbl'>Wells with LAS Files</span></label></td></tr>";
+		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-cuttings'><span class='filter-tbl'>Wells with Rotary Cuttings</span></label></td></tr>";
+		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-core'><span class='filter-tbl'>Wells with Core Samples</span></label></td></tr>";
+		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-active'><span class='filter-tbl'>Active Wells</span></label></td></tr>";
+		content += "<tr><td colspan='2'>Completion Date:</td></tr>";
+		content += "<tr><td colspan='2'><span class='date-pick' id='date-f'>From: <input type='text' size='14' id='from-date' placeholder='mm/dd/yyyy'></span></td></tr>";
+		content += "<tr><td colspan='2'><span class='date-pick' id='date-t'>To: <input type='text' size='14' id='to-date' placeholder='mm/dd/yyyy'></span></td></tr>";
+		content += "<tr><td><button class='find-button' onclick='filterOG()'>Apply Filter</button><button class='find-button' onclick='clearOGFilter()'>Reset</button></td></tr></table>";
+		content += "</div>";	// end filter div.
 		// buffer:
         content += "<div class='find-header esri-icon-right-triangle-arrow' id='buff-tool'><span class='find-hdr-txt tools-txt'> Buffer / Radius</span></div>";
 		content += "<div class='find-body hide' id='find-buff-tool'>";
@@ -1558,21 +1571,7 @@ function(
 		content += "<div id='draw-div'></div>";
 		content += "<button class='find-button clear-draw-btn' onclick='clearDraw();'>Clear</button>";
 		content += "</div>";	// end draw-select div.
-		// Filter:
-		content += "<div class='find-header esri-icon-right-triangle-arrow' id='filter-tool'><span class='find-hdr-txt tools-txt'> Filter Oil and Gas Wells</span></div>";
-		content += "<div class='find-body hide' id='find-filter-tool'>";
-		content += "<table><tr><td colspan='2'>Show Only:</td></tr>";
-		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-domestic'><span class='filter-tbl'>Domestic Wells</span></label></td></tr>";
-		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-rights'><span class='filter-tbl'>Wells Requiring Water Rights</span></label></td></tr>";
-		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-monitoring'><span class='filter-tbl'>Monitoring/Remediation/Engineering</span></label></td></tr>";
-		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-geothermal'><span class='filter-tbl'>Geothermal Wells</span></label></td></tr>";
-		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-testwell'><span class='filter-tbl'>Test Wells</span></label></td></tr>";
-		content += "<tr><td colspan='2'>Driller License #: <input type='text' size='14' id='license'></td></tr>";
-		content += "<tr><td colspan='2'>Completion Date:</td></tr>";
-		content += "<tr><td colspan='2'><span class='date-pick' id='date-f'>From: <input type='text' size='14' id='from-date' placeholder='mm/dd/yyyy'></span></td></tr>";
-		content += "<tr><td colspan='2'><span class='date-pick' id='date-t'>To: <input type='text' size='14' id='to-date' placeholder='mm/dd/yyyy'></span></td></tr>";
-		content += "<tr><td><button class='find-button' onclick='filterWWC5()'>Apply Filter</button><button class='find-button' onclick='clearWWC5Filter()'>Reset</button></td></tr></table>";
-		content += "</div>";	// end filter div.
+
 		// Label:
 		content += "<div class='find-header esri-icon-right-triangle-arrow' id='label-tool'><span class='find-hdr-txt tools-txt'> Label Oil and Gas Wells</span></div>";
 		content += "<div class='find-body hide' id='find-label-tool'>";
@@ -1665,14 +1664,13 @@ function(
 		} );
     }
 
-
-	clearWWC5Filter = function() {
+	clearOGFilter = function() {
 		$(".filter-chk").removeAttr("checked");
 		$("#from-date, #to-date, #license").val("");
 		attrWhere = "";
 		comboWhere = "";
-		wwc5Layer.findSublayerById(4).definitionExpression = "";
-		idDef[4] = "";
+		ogLayer.findSublayerById(0).definitionExpression = "";
+		idDef[0] = "";
 		identifyParams.layerDefinitions = idDef;
 	}
 
@@ -2010,6 +2008,7 @@ function(
 			if (feature.length > 0) {
 				view.popup.actions.splice(3, 1);
 				if (feature.length >= 2) {
+					// TODO: reinstate this?
 					// var downloadMultiAction = {
 			        //     title: "Download These " + feature.length + " Wells",
 			        //     id: "popup-download",
@@ -2017,6 +2016,7 @@ function(
 			        // };
 			        // view.popup.actions.push(downloadMultiAction);
 				}
+
             	openPopup(feature);
 
 				// Highlight row in wells list table: 20181019 - not used.
@@ -2041,7 +2041,6 @@ function(
 		return arrayUtils.map(response, function(result) {
 			var feature = result.feature;
 			var layerName = result.layerName;
-
 
 			if ( result.hasOwnProperty('attributes') && result.attributes.hasOwnProperty('API_NUMBER') ) {
 				// Special case when coming from Find By API, which uses a queryTask.
@@ -2125,7 +2124,7 @@ function(
 
 
 	function ogFieldContent(feature) {
-		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;field&quot;);' title='View KGS Field Production Page'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span>";
+		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;field&quot;);' title='View KGS Field Production Page'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span><span class='esri-icon-environment-settings pu-icon' onclick='showAssignedWells({FIELD_KID});' title='Show Wells Assigned to this Field'></span>";
 		content += "<table id='popup-tbl'><tr><td>Field Name:</td><td>{FIELD_NAME}</td></tr>";
 		content += "<tr><td>Status:</td><td style='white-space:normal'>{STATUS}</td></tr>";
 		content += "<tr><td>Type of Field:</td><td style='white-space:normal'>{FIELD_TYPE}</td></tr>";
@@ -2162,6 +2161,11 @@ function(
 
         return content;
     }
+
+
+	showAssignedWells = function(fieldKID) {
+		ogLayer.findSublayerById(0).definitionExpression = "FIELD_KID = " + fieldKID;;
+	}
 
 
     toggleLayer = function(j) {

@@ -25,7 +25,8 @@ th, td {
 .esri-icon-table,
 .esri-icon-contact,
 .esri-icon-documentation,
-.esri-icon-download {
+.esri-icon-download,
+.esri-icon-environment-settings {
 	cursor: pointer;
 	margin-right: 10px;
 }
