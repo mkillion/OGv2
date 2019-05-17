@@ -139,6 +139,7 @@ function(
 	if (!isMobile) {
 		$("#from-date").datepicker();
 		$("#to-date").datepicker();
+		$("#spud-date").datepicker();
 	}
 
     // Combo boxes:
@@ -739,6 +740,7 @@ function(
 	filterOG = function() {
 		var dateWhere = "";
 		attrWhere = "";
+		var spudDate = $("#spud-date").val();
 		// var compFromDate = $("#from-date").val();
 		// var compToDate = $("#to-date").val();
 
@@ -781,6 +783,9 @@ function(
 		}
 		if ( $("#chk-horiz").is(":checked") ) {
 			attrWhere += "substr(api_workovers, 1, 2) <> '00' and status not in ('LOC') and ";
+		}
+		if ( $("#chk-spud").is(":checked") ) {
+			attrWhere += "spud_date >= to_date('" + spudDate + "','mm/dd/yyyy')";
 		}
 
 		if (attrWhere.substr(attrWhere.length - 5) === " and ") {
@@ -1534,6 +1539,7 @@ function(
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-core'><span class='filter-tbl'>Wells with Core Samples</span></label></td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-active'><span class='filter-tbl'>Active Wells</span></label></td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-horiz'><span class='filter-tbl'>Horizontal Wells</span></label></td></tr>";
+		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-spud'.<span class='filter-tbl'>Spudded since: </span><label><input id='spud-date' size='10'></td></tr>";
 		// content += "<tr><td colspan='2'>Completion Date:</td></tr>";
 		// content += "<tr><td colspan='2'><span class='date-pick' id='date-f'>From: <input type='text' size='14' id='from-date' placeholder='mm/dd/yyyy'></span></td></tr>";
 		// content += "<tr><td colspan='2'><span class='date-pick' id='date-t'>To: <input type='text' size='14' id='to-date' placeholder='mm/dd/yyyy'></span></td></tr>";
