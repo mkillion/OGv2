@@ -779,6 +779,9 @@ function(
 		if ( $("#chk-active").is(":checked") ) {
 			attrWhere += "status not like '%&A' and status not in ('OTHER', 'LOC') and ";
 		}
+		if ( $("#chk-horiz").is(":checked") ) {
+			attrWhere += "substr(api_workovers, 1, 2) <> '00' and status not in ('LOC') and ";
+		}
 
 		if (attrWhere.substr(attrWhere.length - 5) === " and ") {
 			attrWhere = attrWhere.slice(0,attrWhere.length - 5);
@@ -1522,13 +1525,15 @@ function(
 		// Filter:
 		content += "<div class='find-header esri-icon-right-triangle-arrow' id='filter-tool'><span class='find-hdr-txt tools-txt'> Filter Oil and Gas Wells</span></div>";
 		content += "<div class='find-body hide' id='find-filter-tool'>";
-		content += "<table><tr><td colspan='2'>Show Only:</td></tr>";
+		content += "<table><tr><td><span class='note'>Filters can be combined</span></td></tr>";
+		content += "<tr><td colspan='2'>Show Only:</td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-scan'><span class='filter-tbl'>Wells with Scanned E-Logs</span></label></td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-paper'><span class='filter-tbl'>Wells with Paper E-Logs</span></label></td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-las'><span class='filter-tbl'>Wells with LAS Files</span></label></td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-cuttings'><span class='filter-tbl'>Wells with Rotary Cuttings</span></label></td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-core'><span class='filter-tbl'>Wells with Core Samples</span></label></td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-active'><span class='filter-tbl'>Active Wells</span></label></td></tr>";
+		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-horiz'><span class='filter-tbl'>Horizontal Wells</span></label></td></tr>";
 		// content += "<tr><td colspan='2'>Completion Date:</td></tr>";
 		// content += "<tr><td colspan='2'><span class='date-pick' id='date-f'>From: <input type='text' size='14' id='from-date' placeholder='mm/dd/yyyy'></span></td></tr>";
 		// content += "<tr><td colspan='2'><span class='date-pick' id='date-t'>To: <input type='text' size='14' id='to-date' placeholder='mm/dd/yyyy'></span></td></tr>";
