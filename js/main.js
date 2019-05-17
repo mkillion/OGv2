@@ -737,53 +737,47 @@ function(
 
 
 	filterOG = function() {
-		var useWhere = "";
-		var drillerWhere = "";
 		var dateWhere = "";
 		attrWhere = "";
-		var compFromDate = $("#from-date").val();
-		var compToDate = $("#to-date").val();
-		var licenseNum = $("#license").val();
+		// var compFromDate = $("#from-date").val();
+		// var compToDate = $("#to-date").val();
 
-		if ( $("#chk-domestic").prop("checked") ) {
-			useWhere += "water_use_code in (1, 7, 116, 260, 270, 1020) or ";
-		}
-		if ( $("#chk-rights").prop("checked") ) {
-			useWhere += "water_use_code in (2, 4, 5, 6, 116, 1060) or ";
-		}
-		if ( $("#chk-monitoring").prop("checked") ) {
-			useWhere += "water_use_code in (10, 11, 122, 240, 2020, 2030, 2040, 2050) or ";
-		}
-		if ( $("#chk-geothermal").prop("checked") ) {
-			useWhere += "water_use_code in (8, 245, 3000, 3010, 3020, 3030) or ";
-		}
-		if ( $("#chk-testwell").prop("checked") ) {
-			useWhere += "water_use_code in (107, 2070, 2080, 2090) or ";
-		}
-		if (useWhere.substr(useWhere.length - 4) === " or ") {
-			useWhere = useWhere.slice(0,useWhere.length - 4);
-		}
+		// if (compFromDate && compToDate) {
+		// 	dateWhere = "completion_date >= to_date('" + compFromDate + "','mm/dd/yyyy') and completion_date < to_date('" + compToDate + "','mm/dd/yyyy') + 1";
+		// } else if (compFromDate && !compToDate) {
+		// 	dateWhere = "completion_date >= to_date('" + compFromDate + "','mm/dd/yyyy')";
+		// } else if (!compFromDate && compToDate) {
+		// 	dateWhere = "completion_date < to_date('" + compToDate + "','mm/dd/yyyy') + 1";
+		// }
 
-		if (licenseNum) {
-			drillerWhere += "contractors_license_number = " + licenseNum;
-		}
+		// if (useWhere !== "") {
+		// 	attrWhere += useWhere + " and ";
+		// }
+		// if (drillerWhere !== "") {
+		// 	attrWhere += drillerWhere + " and ";
+		// }
+		// if (dateWhere !== "") {
+		// 	attrWhere += dateWhere + " and ";
+		// }
 
-		if (compFromDate && compToDate) {
-			dateWhere = "completion_date >= to_date('" + compFromDate + "','mm/dd/yyyy') and completion_date < to_date('" + compToDate + "','mm/dd/yyyy') + 1";
-		} else if (compFromDate && !compToDate) {
-			dateWhere = "completion_date >= to_date('" + compFromDate + "','mm/dd/yyyy')";
-		} else if (!compFromDate && compToDate) {
-			dateWhere = "completion_date < to_date('" + compToDate + "','mm/dd/yyyy') + 1";
-		}
 
-		if (useWhere !== "") {
-			attrWhere += useWhere + " and ";
+		if ( $("#chk-scan").is(":checked") ) {
+			attrWhere += "kid in (select well_header_kid from elog.scan_urls) and ";
 		}
-		if (drillerWhere !== "") {
-			attrWhere += drillerWhere + " and ";
+		if ( $("#chk-paper").is(":checked") ) {
+			attrWhere += "kid in (select well_header_kid from elog.log_headers) and ";
 		}
-		if (dateWhere !== "") {
-			attrWhere += dateWhere + " and ";
+		if ( $("#chk-las").is(":checked") ) {
+			attrWhere += "kid in (select well_header_kid from las.well_headers where proprietary = 0) and ";
+		}
+		if ( $("#chk-cuttings").is(":checked") ) {
+			attrWhere += "kid in (select well_header_kid from cuttings.boxes) and ";
+		}
+		if ( $("#chk-core").is(":checked") ) {
+			attrWhere += "kid in (select well_header_kid from core.core_headers) and ";
+		}
+		if ( $("#chk-active").is(":checked") ) {
+			attrWhere += "status not like '%&A' and status not in ('OTHER', 'LOC') and ";
 		}
 
 		if (attrWhere.substr(attrWhere.length - 5) === " and ") {
@@ -1529,14 +1523,15 @@ function(
 		content += "<div class='find-header esri-icon-right-triangle-arrow' id='filter-tool'><span class='find-hdr-txt tools-txt'> Filter Oil and Gas Wells</span></div>";
 		content += "<div class='find-body hide' id='find-filter-tool'>";
 		content += "<table><tr><td colspan='2'>Show Only:</td></tr>";
-		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-elogs'><span class='filter-tbl'>Wells with Electric Logs</span></label></td></tr>";
+		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-scan'><span class='filter-tbl'>Wells with Scanned E-Logs</span></label></td></tr>";
+		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-paper'><span class='filter-tbl'>Wells with Paper E-Logs</span></label></td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-las'><span class='filter-tbl'>Wells with LAS Files</span></label></td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-cuttings'><span class='filter-tbl'>Wells with Rotary Cuttings</span></label></td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-core'><span class='filter-tbl'>Wells with Core Samples</span></label></td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-active'><span class='filter-tbl'>Active Wells</span></label></td></tr>";
-		content += "<tr><td colspan='2'>Completion Date:</td></tr>";
-		content += "<tr><td colspan='2'><span class='date-pick' id='date-f'>From: <input type='text' size='14' id='from-date' placeholder='mm/dd/yyyy'></span></td></tr>";
-		content += "<tr><td colspan='2'><span class='date-pick' id='date-t'>To: <input type='text' size='14' id='to-date' placeholder='mm/dd/yyyy'></span></td></tr>";
+		// content += "<tr><td colspan='2'>Completion Date:</td></tr>";
+		// content += "<tr><td colspan='2'><span class='date-pick' id='date-f'>From: <input type='text' size='14' id='from-date' placeholder='mm/dd/yyyy'></span></td></tr>";
+		// content += "<tr><td colspan='2'><span class='date-pick' id='date-t'>To: <input type='text' size='14' id='to-date' placeholder='mm/dd/yyyy'></span></td></tr>";
 		content += "<tr><td><button class='find-button' onclick='filterOG()'>Apply Filter</button><button class='find-button' onclick='clearOGFilter()'>Reset</button></td></tr></table>";
 		content += "</div>";	// end filter div.
 		// buffer:
