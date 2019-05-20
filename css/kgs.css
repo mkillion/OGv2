@@ -329,7 +329,8 @@ input[type=checkbox] {
 	margin-left: 15px;
 }
 
-#date-t {
+#date-t,
+#depth-t {
 	margin-left: 35px;
 }
 

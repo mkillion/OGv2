@@ -153,6 +153,10 @@ function(
   		source: "getWellNames.cfm"
 	} );
 
+	$( "#curr-op" ).autocomplete({
+  		source: "getOperators.cfm"
+	} );
+
     // End framework.
 
     // Create map and map widgets:
@@ -738,30 +742,38 @@ function(
 
 
 	filterOG = function() {
-		var dateWhere = "";
 		attrWhere = "";
+		var dateWhere = "";
+		var depthWhere= "";
 		var spudDate = $("#spud-date").val();
-		// var compFromDate = $("#from-date").val();
-		// var compToDate = $("#to-date").val();
+		var compFromDate = $("#from-date").val();
+		var compToDate = $("#to-date").val();
+		var fromDepth = $("#from-depth").val();
+		var toDepth = $("#to-depth").val();
+		var currentOperator = $("#curr-op").val();
 
-		// if (compFromDate && compToDate) {
-		// 	dateWhere = "completion_date >= to_date('" + compFromDate + "','mm/dd/yyyy') and completion_date < to_date('" + compToDate + "','mm/dd/yyyy') + 1";
-		// } else if (compFromDate && !compToDate) {
-		// 	dateWhere = "completion_date >= to_date('" + compFromDate + "','mm/dd/yyyy')";
-		// } else if (!compFromDate && compToDate) {
-		// 	dateWhere = "completion_date < to_date('" + compToDate + "','mm/dd/yyyy') + 1";
-		// }
+		if (compFromDate && compToDate) {
+			dateWhere = "completion_date >= to_date('" + compFromDate + "','mm/dd/yyyy') and completion_date < to_date('" + compToDate + "','mm/dd/yyyy') + 1";
+		} else if (compFromDate && !compToDate) {
+			dateWhere = "completion_date >= to_date('" + compFromDate + "','mm/dd/yyyy')";
+		} else if (!compFromDate && compToDate) {
+			dateWhere = "completion_date < to_date('" + compToDate + "','mm/dd/yyyy') + 1";
+		}
 
-		// if (useWhere !== "") {
-		// 	attrWhere += useWhere + " and ";
-		// }
-		// if (drillerWhere !== "") {
-		// 	attrWhere += drillerWhere + " and ";
-		// }
-		// if (dateWhere !== "") {
-		// 	attrWhere += dateWhere + " and ";
-		// }
+		if (fromDepth && toDepth) {
+			depthWhere = "rotary_total_depth >= " + fromDepth + " and rotary_total_depth < " + toDepth;
+		} else if (fromDepth && !toDepth) {
+			depthWhere = "rotary_total_depth >= " + fromDepth;
+		} else if (!fromDepth && toDepth) {
+			depthWhere = "rotary_total_depth < " + toDepth;
+		}
 
+		if (dateWhere !== "") {
+			attrWhere += dateWhere + " and ";
+		}
+		if (depthWhere !== "") {
+			attrWhere += depthWhere + " and ";
+		}
 
 		if ( $("#chk-scan").is(":checked") ) {
 			attrWhere += "kid in (select well_header_kid from elog.scan_urls) and ";
@@ -785,7 +797,10 @@ function(
 			attrWhere += "substr(api_workovers, 1, 2) <> '00' and status not in ('LOC') and ";
 		}
 		if ( $("#chk-spud").is(":checked") ) {
-			attrWhere += "spud_date >= to_date('" + spudDate + "','mm/dd/yyyy')";
+			attrWhere += "spud_date >= to_date('" + spudDate + "','mm/dd/yyyy') and ";
+		}
+		if (currentOperator) {
+			attrWhere += "curr_operator = '" + currentOperator + "' and ";
 		}
 
 		if (attrWhere.substr(attrWhere.length - 5) === " and ") {
@@ -993,7 +1008,7 @@ function(
 		if (!attrWhere && !ogGeomWhere) {
 			ogComboWhere = "";
 		}
-
+		
 		ogLayer.findSublayerById(0).definitionExpression = ogComboWhere;
 		idDef[0] = ogComboWhere;
 
@@ -1540,9 +1555,14 @@ function(
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-active'><span class='filter-tbl'>Active Wells</span></label></td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-horiz'><span class='filter-tbl'>Horizontal Wells</span></label></td></tr>";
 		content += "<tr><td><label><input type='checkbox' class='filter-chk' id='chk-spud'.<span class='filter-tbl'>Spudded since: </span><label><input id='spud-date' size='10'></td></tr>";
-		// content += "<tr><td colspan='2'>Completion Date:</td></tr>";
-		// content += "<tr><td colspan='2'><span class='date-pick' id='date-f'>From: <input type='text' size='14' id='from-date' placeholder='mm/dd/yyyy'></span></td></tr>";
-		// content += "<tr><td colspan='2'><span class='date-pick' id='date-t'>To: <input type='text' size='14' id='to-date' placeholder='mm/dd/yyyy'></span></td></tr>";
+		content += "<tr><td colspan='2'>Completion Date:</td></tr>";
+		content += "<tr><td colspan='2'><span class='date-pick' id='date-f'>From: <input type='text' size='14' id='from-date' placeholder='mm/dd/yyyy'></span></td></tr>";
+		content += "<tr><td colspan='2'><span class='date-pick' id='date-t'>To: <input type='text' size='14' id='to-date' placeholder='mm/dd/yyyy'></span></td></tr>";
+		content += "<tr><td colspan='2'>Total Depth (ft):</td></tr>";
+		content += "<tr><td colspan='2'><span class='date-pick' id='depth-f'>From: <input type='text' size='14' id='from-depth'></span></td></tr>";
+		content += "<tr><td colspan='2'><span class='date-pick' id='depth-t'>To: <input type='text' size='14' id='to-depth'></span></td></tr>";
+		content += "<tr><td colspan='2'>Current Operator:</td></tr>";
+		content += "<tr><td colspan='2'><span class='date-pick'>Name: <input type='text' size='20' id='curr-op'></span></td></tr>";
 		content += "<tr><td><button class='find-button' onclick='filterOG()'>Apply Filter</button><button class='find-button' onclick='clearOGFilter()'>Reset</button></td></tr></table>";
 		content += "</div>";	// end filter div.
 		// buffer:
@@ -1672,7 +1692,7 @@ function(
 
 	clearOGFilter = function() {
 		$(".filter-chk").removeAttr("checked");
-		$("#from-date, #to-date, #license").val("");
+		$("#from-date, #to-date, #spud-date, #from-depth, #to-depth").val("");
 		attrWhere = "";
 		comboWhere = "";
 		ogLayer.findSublayerById(0).definitionExpression = "";
