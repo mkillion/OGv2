@@ -221,8 +221,8 @@ function(
 			  	symbol: {
 					type: "simple-marker",
 	  	    		style: "circle",
-	  	    		size: 12,
-	  	    		color: [0, 0, 255, 0.8]
+	  	    		size: 10,
+	  	    		color: [0, 0, 255, 0.7]
 	  			}
 		    }, {
 		      value: "2",
@@ -230,8 +230,8 @@ function(
 			  symbol: {
 				  type: "simple-marker",
 				  style: "circle",
-				  size: 12,
-				  color: [0, 240, 250, 0.8]
+				  size: 10,
+				  color: [0, 240, 250, 0.7]
 			  }
 		    }, {
 		      value: "3",
@@ -239,8 +239,8 @@ function(
 			  symbol: {
 				  type: "simple-marker",
 				  style: "circle",
-				  size: 12,
-				  color: [200, 200, 200, 0.8]
+				  size: 10,
+				  color: [200, 200, 200, 0.7]
 			  }
 		    }
 		],
@@ -595,6 +595,7 @@ function(
 		clearBuffer();
 		clearBufferControls();
 		clearOGFilter();
+		clearWWC5Filter();
 		distanceWidget.viewModel.clearMeasurement();
 		areaWidget.viewModel.clearMeasurement();
     } );
@@ -620,6 +621,7 @@ function(
 	function selectFeatures(drawGeom) {
 		if ( $("#draw-select-chk").is(":checked") ) {
 			createWWC5GeomWhere(drawGeom);
+			createOGWellsGeomWhere(drawGeom);
 			setTimeout(waitForGeomWheres(), 100);
 		}
 	}
@@ -654,6 +656,7 @@ function(
 
 	clearDraw = function() {
 		drawingLayer.removeAll();
+		clearOGFilter();
 		clearWWC5Filter();
 	}
 
@@ -1008,7 +1011,7 @@ function(
 		if (!attrWhere && !ogGeomWhere) {
 			ogComboWhere = "";
 		}
-		
+
 		ogLayer.findSublayerById(0).definitionExpression = ogComboWhere;
 		idDef[0] = ogComboWhere;
 
@@ -1697,6 +1700,17 @@ function(
 		comboWhere = "";
 		ogLayer.findSublayerById(0).definitionExpression = "";
 		idDef[0] = "";
+		identifyParams.layerDefinitions = idDef;
+	}
+
+
+	clearWWC5Filter = function() {
+		// $(".filter-chk").removeAttr("checked");
+		// $("#from-date, #to-date, #spud-date, #from-depth, #to-depth").val("");
+		attrWhere = "";
+		comboWhere = "";
+		wwc5Layer.findSublayerById(4).definitionExpression = "";
+		idDef[4] = "";
 		identifyParams.layerDefinitions = idDef;
 	}
 
