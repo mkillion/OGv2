@@ -1023,7 +1023,10 @@ function(
 		view.popup.features = feature;
 		view.popup.visible = true;
 		if (feature.length > 1) {
-			setTimeout(showPuDownloadIcon, 250);
+			if ( !feature[0].attributes.hasOwnProperty('INPUT_SEQ_NUMBER') ) {
+				// ^ don't add download icon to popup if it's a WWC5 well.
+				setTimeout(showPuDownloadIcon, 250);
+			}
 		}
     }
 
