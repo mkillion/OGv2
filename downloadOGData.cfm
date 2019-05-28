@@ -365,7 +365,7 @@
 			</cfif>
 		<cfelse>
 			<cfif FindNoCase("Download", #WellsFileText#) neq 0>
-				#WellsFileName#
+				oilgas_#TimeStamp#.zip
 			<cfelse>
 				"no file"
 			</cfif>
