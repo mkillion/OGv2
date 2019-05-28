@@ -1585,11 +1585,14 @@ function(
 		content += "<span class='note'>Create a point to buffer by either:<ul><li>Selecting a well, or</li><li>Double-clicking on the map, or</li><li>Searching for an adress</li></ul></span>";
 		content += "</div>";	// end buffer div.
 		// Download:
-		content += "<div class='find-header esri-icon-right-triangle-arrow' id='download-tool'><span class='find-hdr-txt tools-txt'> Download Data</span></div>";
+		content += "<div class='find-header esri-icon-right-triangle-arrow' id='download-tool'><span class='find-hdr-txt tools-txt'> Download Oil and Gas Well Data</span></div>";
 		content += "<div class='find-body hide' id='find-download-tool'>";
-		content += "<div class='note'><ul><li>Creates comma-delimited text files with well and lithologic log information for wells visible <b>in the current map extent</b>.</li>";
-		content += "<li>For other options to download well data visit the <a href='http://www.kgs.ku.edu/Magellan/WaterWell/index.html' target='_blank'>WWC5 Database</a>.</li>";
-		content += "<li>To download a shapefile of all WWC5 wells, visit the <a href='https://kansasgis.org/index.cfm' target='_blank'>DASC catalog</a>.</li></ul></div>";
+		content += "<div class='note'><ul><li>Creates comma-delimited text files with well, tops, log, LAS, cuttings, and core information for wells visible in the current map extent.</li>";
+        content += "<li>If a filter is in effect, the download will also be filtered.</li>";
+		content += "<li>To download a shapefile of all oil and gas wells, visit the <a href='http://www.kgs.ku.edu/PRS/petroDB.html' target='_blank'>Oil and Gas Database page.</a>.</li></ul></div>";
+		// content += "<table><tr><td>Include:</td></tr>";
+		// content += "<tr><td><input type='checkbox' class='buff-input' id='download-og-chk' checked> Oil and gas well data</td></tr>";
+		// content += "<tr><td><input type='checkbox' class='buff-input' id='download-wwc5-chk'> WWC5 water well data</td></tr></table>";
 		content += "<div><button class='find-button' onclick='downloadData(&quot;d&quot;)'>Create CSV Files</button><img id='loader2' class='hide' src='images/ajax-loader.gif'></div>";
 		content += "<div class='download-link' id='wells-link'></div>";
 		content += "</div>";	// end download div.
@@ -1695,7 +1698,7 @@ function(
 
 	clearOGFilter = function() {
 		$(".filter-chk").removeAttr("checked");
-		$("#from-date, #to-date, #spud-date, #from-depth, #to-depth").val("");
+		$("#from-date, #to-date, #spud-date, #curr-op, #from-depth, #to-depth").val("");
 		attrWhere = "";
 		comboWhere = "";
 		ogLayer.findSublayerById(0).definitionExpression = "";
@@ -1955,32 +1958,58 @@ function(
 
 
 	downloadData = function(type) {
-		if (wwc5Layer.visible) {
+		if (ogLayer.visible) {
 			$("#wells-link").html("");
 			$("#loader2").show();
 
 			var extLL = webMercatorUtils.xyToLngLat(view.extent.xmin, view.extent.ymin);
 			var extUR = webMercatorUtils.xyToLngLat(view.extent.xmax, view.extent.ymax);
 
-			var inputSeqNum;
+			var kid;
 			if (view.popup.selectedFeature) {
-				var inputSeqNum = view.popup.selectedFeature.attributes.INPUT_SEQ_NUMBER;
+				kid = view.popup.selectedFeature.attributes.KID;
 			}
 
-			var packet = { "attrWhere": attrWhere, "combowhere": comboWhere, "xmin": extLL[0], "xmax": extUR[0], "ymin": extLL[1], "ymax": extUR[1], "type": type, "seqnum": inputSeqNum };
+			var packet = { "attrWhere": attrWhere, "ogCombowhere": ogComboWhere, "xmin": extLL[0], "xmax": extUR[0], "ymin": extLL[1], "ymax": extUR[1], "type": type, "kid": kid };
 
-			$.post( "downloadWells.cfm", packet, function(response) {
+			$.post( "downloadOGData.cfm", packet, function(response) {
 				if (type === "d") {
 					$("#wells-link").html(response);
-					$("#loader2").hide();
 				} else {
 					window.open("https://maps.kgs.ku.edu/oilgas/output/" + response, "target='_blank'");
-					$("#loader2").hide();
 				}
+				$("#loader2").hide();
 			} );
 		} else {
-			alert("Wells layer must be turned on (Display tab).");
+			alert("Oil and gas wells layer must be turned on (Display tab).");
 		}
+
+		// if (wwc5Layer.visible) {
+		// 	$("#wells-link").html("");
+		// 	$("#loader2").show();
+		//
+		// 	var extLL = webMercatorUtils.xyToLngLat(view.extent.xmin, view.extent.ymin);
+		// 	var extUR = webMercatorUtils.xyToLngLat(view.extent.xmax, view.extent.ymax);
+		//
+		// 	var inputSeqNum;
+		// 	if (view.popup.selectedFeature) {
+		// 		var inputSeqNum = view.popup.selectedFeature.attributes.INPUT_SEQ_NUMBER;
+		// 	}
+		//
+		// 	var packet = { "attrWhere": attrWhere, "combowhere": comboWhere, "xmin": extLL[0], "xmax": extUR[0], "ymin": extLL[1], "ymax": extUR[1], "type": type, "seqnum": inputSeqNum };
+		//
+		// 	$.post( "downloadWells.cfm", packet, function(response) {
+		// 		if (type === "d") {
+		// 			$("#wells-link").html(response);
+		// 			$("#loader2").hide();
+		// 		} else {
+		// 			window.open("https://maps.kgs.ku.edu/oilgas/output/" + response, "target='_blank'");
+		// 			$("#loader2").hide();
+		// 		}
+		// 	} );
+		// } else {
+		// 	alert("Wells layer must be turned on (Display tab).");
+		// }
 	}
 
 
