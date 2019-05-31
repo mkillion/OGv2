@@ -1032,7 +1032,7 @@ function(
 
 
 	function showPuDownloadIcon() {
-		$(".esri-popup__pagination-next").append("<span class='esri-icon-download pu-icon' style='margin-left:25px' onclick='downloadData(&quot;p&quot;)' title='Download all wells at this point'></span>");
+		$(".esri-popup__pagination-next").append("<span class='esri-icon-download pu-icon' style='margin-left:25px' onclick='downloadData(&quot;p&quot;)' title='Download all oil/gas wells at this point'></span>");
 	}
 
 
@@ -1950,7 +1950,7 @@ function(
 		$.each(localStorage, function(key, val) {
 			if (key.indexOf("kgsog") > -1) {
 				if (key.indexOf("-bm-") > -1) {
-					var bName = key.slice(11).replace(/xx/g, " ");	// put spaces back in name.
+					var bName = key.slice(9).replace(/xx/g, " ");	// put spaces back in name.
 					bName = bName.replace(/yyy/g, "'");	// put apostrophes back.
 					var link = "<div class='bookmark-link' id='" + key + "'><span class='esri-icon-map-pin'></span><span class='b-name' onclick='goToBookmark(&quot;" + key + "&quot;)'>" + bName + "</span><span class='esri-icon-minus-circled' title='Delete Bookmark' onclick='deleteBookmark(&quot;" + key + "&quot;)'></span></div>";
 					$("#bookmark-links").append(link);
