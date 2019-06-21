@@ -168,7 +168,8 @@ function(
 	findParams.returnGeometry = true;
 
     var basemapLayer = new TileLayer( {url:"//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer", id:"Base Map"} );
-    var plssLayer = new TileLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/plss/plss/MapServer", id:"Section-Township-Range", visible:true} );
+    // var plssLayer = new TileLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/plss/plss/MapServer", id:"Section-Township-Range", visible:true} );
+	var plssLayer = new TileLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/plss/plss_anno_labels/MapServer", id:"Section-Township-Range", visible:true} );
 	var topoLayer = new TileLayer( {url:"http://server.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer", id:"Topography", visible:false} );
 	var naip2017Layer = new ImageryLayer( {url:"//services.kgs.ku.edu/arcgis7/rest/services/IMAGERY_STATEWIDE/FSA_NAIP_2017_Color/ImageServer", id:"2017", visible:false} );
 	var naip2015Layer = new ImageryLayer( {url:"//services.kgs.ku.edu/arcgis7/rest/services/IMAGERY_STATEWIDE/FSA_NAIP_2015_Color/ImageServer", id:"2015", visible:false} );
@@ -1280,29 +1281,12 @@ function(
 
 		var printTask = new PrintTask( {url: "https://services.kgs.ku.edu/arcgis8/rest/services/util/ExportWebMap/GPServer/Export%20Web%20Map"} );
 
-		var classificationType = $("input[name='ct']:checked").val();
-		switch (classificationType) {
-			case "yld":
-				var legendTitle = "Yield (gpm)";
-				break;
-			case "dpth":
-				var legendTitle = "Completed Well Depth (ft)";
-				break;
-			case "lvl":
-				var legendTitle = "Static Water Level (ft)";
-				break;
-			case "type":
-				var legendTitle = "General Well Type";
-				break;
-			case "none":
-				var legendTitle = "";
-				break;
-		}
-
 		if ( $("#incl-legend").is(":checked") ) {
-			var legLyrs = new LegendLayer( {layerId: "WWC5 Water Wells"} );
+			var legLyrs = new LegendLayer( {layerId: "Oil and Gas Wells"} );
 			var legendLyrs = [legLyrs];
+			var legendTitle = "Oil and Gas Wells";
 		} else {
+			console.log("no legend");
 			var legendLyrs = [];
 			var legendTitle = "";
 		}
@@ -1315,7 +1299,7 @@ function(
 		 	layout: dom.byId("page-setup").value,
 		 	layoutOptions: {
 		   		titleText: dom.byId("map-title").value,
-		   		authorText: "Kansas Geological Survey - https://maps.kgs.ku.edu/wwc5",
+		   		authorText: "Kansas Geological Survey - https://maps.kgs.ku.edu/oilgas",
 				scalebarUnit: "Miles",
 				legendLayers: legendLyrs,
 				copyrightText: legendTitle	// Highjacking this text element to display legend title info (in custom templates - Templates_Custom folder).
@@ -1329,6 +1313,7 @@ function(
 		} );
 
 		printTask.execute(params).then(function(response) {
+			console.log(response);
 			var printLink = "<a class='download-link' target='_blank' href='" + response.url + "'><span class='esri-icon-download'></span>Open Map File</a>";
 			$("#print-link").html(printLink);
 			$("#loader3").hide();
@@ -1500,8 +1485,6 @@ function(
         content += '<div class="find-header esri-icon-right-triangle-arrow" id="field"><span class="find-hdr-txt"> Field Name</span></div>';
         content += '<div class="find-body hide" id="find-field">';
         content += 'Field Name: <input id="field-select" size="18">';
-		// TODO: reinstate next line, or add something similar to filter or fields popup.
-		// content += '<tr><td colspan="2"><input type="checkbox" id="field-list-wells">List wells assigned to this field</td></tr>';
 		content += '<button class=find-button onclick=findIt("field")>Find</button>';
         content += '</div>';
 		// KGS OG WELL KID:
@@ -2079,15 +2062,6 @@ function(
         } ).then(function(feature) {
 			if (feature.length > 0) {
 				view.popup.actions.splice(3, 1);
-				if (feature.length >= 2) {
-					// TODO: reinstate this?
-					// var downloadMultiAction = {
-			        //     title: "Download These " + feature.length + " Wells",
-			        //     id: "popup-download",
-			        //     className: "esri-icon-download pu-icon"
-			        // };
-			        // view.popup.actions.push(downloadMultiAction);
-				}
 
             	openPopup(feature);
 
@@ -2167,7 +2141,7 @@ function(
 			var elev = "";
 		}
 
-		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;ogwell&quot;);' title='View Full KGS Databasse Record'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span>";
+		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;ogwell&quot;);' title='View Full KGS Database Record'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span>";
 		content += "<table id='popup-tbl'><tr><td>API:</td><td>{API_NUMBER}</td></tr>";
 		content += "<tr><td>Lease:</td><td style='white-space:normal'>{LEASE_NAME}</td></tr>";
 		content += "<tr><td>Well:</td><td>{WELL_NAME}</td></tr>";
@@ -2211,7 +2185,7 @@ function(
 
 
     function wwc5Content(feature) {
-		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;wwc5&quot;);' title='View Full KGS Databasse Record'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span><span class='esri-icon-documentation pu-icon' onclick='showWwc5Scan();' title='View Scanned WWC5 Form'></span>";
+		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;wwc5&quot;);' title='View Full KGS Database Record'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span><span class='esri-icon-documentation pu-icon' onclick='showWwc5Scan();' title='View Scanned WWC5 Form'></span>";
 		content += "<table id='popup-tbl'>";
 		content += "<tr><td>Owner:</td><td>{OWNER_NAME}</td></tr>";
 		content += "<tr><td>Use:</td><td style='white-space:normal'>{USE_DESC}</td></tr>";
