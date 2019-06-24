@@ -577,7 +577,11 @@ function(
 			{
 	 			layer: ogLayer,
 	 			title: "Oil and Gas Wells"
-	 		}
+	 		},
+			{
+				layer: leasesLayer,
+				title: "Leases"
+			}
 			// ,
 			// {
 			// 	layer: lpcLayer,
