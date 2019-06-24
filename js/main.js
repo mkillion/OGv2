@@ -185,6 +185,15 @@ function(
 	var fieldsLayer = new MapImageLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_fields/MapServer", id:"Oil and Gas Fields", visible:false} );
 	// var lpcLayer = new MapImageLayer( {url:"http://kars.ku.edu/arcgis/rest/services/Sgpchat/SouthernGreatPlainsCrucialHabitatAssessmentToolLPCCrucialHabitat/MapServer", id:"LPC Habitat", visible: false} );
 
+	var leasesLayer = new MapImageLayer( {
+		url: ogGeneralServiceURL,
+		id: "Oil and Gas Leases",
+		visible: false,
+		sublayers: [ {
+			id: 6
+		} ]
+	} );
+
 	var ogLayer = new MapImageLayer( {
 		url: ogGeneralServiceURL,
 		id: "Oil and Gas Wells",
@@ -296,6 +305,7 @@ function(
 			// lpcLayer,
 			fieldsLayer,
 			plssLayer,
+			leasesLayer,
 			countyLayer,
 			wwc5Layer,
 			ogLayer]
@@ -354,7 +364,7 @@ function(
         identifyParams = new IdentifyParameters();
 		identifyParams.returnGeometry = true;
         identifyParams.tolerance = (isMobile) ? 9 : 4;
-        identifyParams.layerIds = [0,4,5];
+        identifyParams.layerIds = [0,4,5,6];
         identifyParams.layerOption = "visible";
         identifyParams.width = view.width;
         identifyParams.height = view.height;
