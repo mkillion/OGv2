@@ -364,7 +364,7 @@ function(
         identifyParams = new IdentifyParameters();
 		identifyParams.returnGeometry = true;
         identifyParams.tolerance = (isMobile) ? 9 : 4;
-        identifyParams.layerIds = [0,4,5,6];
+        identifyParams.layerIds = [0,6,5,4];
         identifyParams.layerOption = "visible";
         identifyParams.width = view.width;
         identifyParams.height = view.height;
@@ -1804,6 +1804,9 @@ function(
 			case "wwc5":
 				var url = "http://chasm.kgs.ku.edu/ords/wwc5.wwc5d2.well_details?well_id=" + $("#seq-num").html();
 				break;
+			case "lease":
+				var url = "https://chasm.kgs.ku.edu/ords/oil.ogl5.MainLease?f_lc=" + $("#lease-kid").html();
+				break;
 		}
 		var win = window.open(url, "target='_blank'");
     }
@@ -2126,7 +2129,14 @@ function(
 					content: ogFieldContent(feature)
 				} );
 				feature.popupTemplate = ogFieldTemplate;
+			} else if (layerName === "Leases") {
+				var leaseTemplate = new PopupTemplate( {
+					title: "LEASE - {LEASE_NAME}",
+					content: leaseContent(feature)
+				} );
+				feature.popupTemplate = leaseTemplate;
 			}
+
 			return feature;
 		} );
 	}
@@ -2218,6 +2228,28 @@ function(
         content += "<tr><td>Quarter Section:</td><td>{QUARTER_CALL_3}&nbsp;&nbsp;{QUARTER_CALL_2}&nbsp;&nbsp;{QUARTER_CALL_1_LARGEST}</td></tr>";
 		content += "<tr><td>Latitude, Longitude (NAD27):</td><td>{NAD27_LATITUDE},&nbsp;&nbsp;{NAD27_LONGITUDE}</td></tr>";
 		content += "<tr><td>Lat-Lon Source:</td><td>{LONGITUDE_LATITUDE_SOURCE}</td></tr></table>";
+
+        return content;
+    }
+
+
+	function leaseContent(feature) {
+		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;lease&quot;);' title='View KGS Lease Production Page'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span><span class='esri-icon-environment-settings pu-icon' onclick='showLeaseWells({FIELD_KID});' title='Show Wells For This Lease'></span>";
+		content += "<table id='popup-tbl'><tr><td>Lease Name:</td><td>{LEASE_NAME}</td></tr>";
+		content += "<tr><td>Operator:</td><td style='white-space:normal'>{OPERATOR_NAME}</td></tr>";
+		content += "<tr><td>Produces Oil:</td><td style='white-space:normal'>{PRODUCES_OIL}</td></tr>";
+		content += "<tr><td>Produces Gas:</td><td style='white-space:normal'>{PRODUCES_GAS}</td></tr>";
+		content += "<tr><td>Cumulative Production:</td><td style='white-space:normal'>{CUMULATIVE_PRODUCTION}</td></tr>";
+		content += "<tr><td>Production From:</td><td style='white-space:normal'>{CUMULATIVE_YEAR_STARTED}</td></tr>";
+		content += "<tr><td>Production To:</td><td style='white-space:normal'>{CUMULATIVE_YEAR_ENDED}</td></tr>";
+		content += "<tr><td>KS DOR Lease Code:</td><td style='white-space:normal'>{LEASE_CODE_DOR}</td></tr>";
+		content += "<tr><td>Producing Zone:</td><td style='white-space:normal'>{PRODUCING_FORMATION}</td></tr>";
+		content += "<tr><td>Field:</td><td style='white-space:normal'>{FIELD_NAME}</td></tr>";
+		content += "<tr><td>County:</td><td style='white-space:normal'>{NAME}</td></tr>";
+		content += "<tr><td>Section:</td><td>T{TOWNSHIP}S&nbsp;&nbsp;R{RANGE}{RANGE_DIRECTION}&nbsp;&nbsp;Sec {SECTION}</td></tr>";
+		content += "<tr><td>Quarter Section:</td><td>{SPOT}&nbsp;&nbsp;{SUBDIVISION_4_SMALLEST}&nbsp;&nbsp;{SUBDIVISION_3}&nbsp;&nbsp;{SUBDIVISION_2}&nbsp;&nbsp;{SUBDIVISION_1_LARGEST}</td></tr>";
+		content += "<tr><td>Lease KID:</td><td id='lease-kid'>{KID}</td></tr>";
+		content += "</table>";
 
         return content;
     }
