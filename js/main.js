@@ -2113,7 +2113,7 @@ function(
 
 			if (layerName === "Oil and Gas Wells") {
 				var ogWellsTemplate = new PopupTemplate( {
-					title: "<span class='pu-title'>{WELL_LABEL} </span><span class='pu-note'>{API_NUMBER}</span>",
+					title: "WELL - <span class='pu-title'>{WELL_LABEL} </span><span class='pu-note'>{API_NUMBER}</span>",
 					content: ogWellContent(feature)
 				} );
 				feature.popupTemplate = ogWellsTemplate;
@@ -2234,20 +2234,89 @@ function(
 
 
 	function leaseContent(feature) {
+		var f = feature.attributes;
+
+		var spot = "";
+		var sub4 = "";
+		var sub3 = "";
+		var sub2 = "";
+		var sub1 = "";
+		var pf = "";
+		var units = "";
+		var fn = "";
+		var cp = "";
+		var cpf = "";
+		var cpt = "";
+		var dor = "";
+		var dorname = "";
+		var to = " to ";
+
+		if (f.SPOT != "Null") {
+			spot = f.SPOT;
+		}
+		if (f.SUBDIVISION_4_SMALLEST != "Null") {
+			sub4 = f.SUBDIVISION_4_SMALLEST;
+		}
+		if (f.SUBDIVISION_3 != "Null") {
+			sub3 = f.SUBDIVISION_3;
+		}
+		if (f.SUBDIVISION_2 != "Null") {
+			sub2 = f.SUBDIVISION_2;
+		}
+		if (f.SUBDIVISION_1_LARGEST != "Null") {
+			sub1 = f.SUBDIVISION_1_LARGEST;
+		}
+
+		if (f.PRODUCING_FORMATION != "Null") {
+			pf = f.PRODUCING_FORMATION;
+		}
+
+		if (f.PRODUCES_OIL == "Yes") {
+			units = "bbls";
+		}
+		if (f.PRODUCES_GAS == "Yes") {
+			units = "mcf";
+		}
+
+		if (f.FIELD_NAME != "Null") {
+			fn = f.FIELD_NAME;
+		}
+
+		if (f.CUMULATIVE_PRODUCTION != "Null") {
+			cp = f.CUMULATIVE_PRODUCTION;
+		}
+		if (f.CUMULATIVE_YEAR_STARTED != "Null") {
+			cpf = f.CUMULATIVE_YEAR_STARTED;
+		}
+		if (f.CUMULATIVE_YEAR_ENDED != "Null") {
+			cpt = f.CUMULATIVE_YEAR_ENDED;
+		}
+		if (cpf === "" && cpt === "") {
+			to = "";
+		}
+
+		if (f.LEASE_CODE_DOR != "Null") {
+			dor = f.LEASE_CODE_DOR;
+		}
+
+		if (f.LEASE_NAME_DOR != "Null") {
+			dorname = f.LEASE_NAME_DOR;
+		}
+
 		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;lease&quot;);' title='View KGS Lease Production Page'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span><span class='esri-icon-environment-settings pu-icon' onclick='showLeaseWells({FIELD_KID});' title='Show Wells For This Lease'></span>";
 		content += "<table id='popup-tbl'><tr><td>Lease Name:</td><td>{LEASE_NAME}</td></tr>";
 		content += "<tr><td>Operator:</td><td style='white-space:normal'>{OPERATOR_NAME}</td></tr>";
 		content += "<tr><td>Produces Oil:</td><td style='white-space:normal'>{PRODUCES_OIL}</td></tr>";
 		content += "<tr><td>Produces Gas:</td><td style='white-space:normal'>{PRODUCES_GAS}</td></tr>";
-		content += "<tr><td>Cumulative Production:</td><td style='white-space:normal'>{CUMULATIVE_PRODUCTION}</td></tr>";
-		content += "<tr><td>Production From:</td><td style='white-space:normal'>{CUMULATIVE_YEAR_STARTED}</td></tr>";
-		content += "<tr><td>Production To:</td><td style='white-space:normal'>{CUMULATIVE_YEAR_ENDED}</td></tr>";
-		content += "<tr><td>KS DOR Lease Code:</td><td style='white-space:normal'>{LEASE_CODE_DOR}</td></tr>";
-		content += "<tr><td>Producing Zone:</td><td style='white-space:normal'>{PRODUCING_FORMATION}</td></tr>";
-		content += "<tr><td>Field:</td><td style='white-space:normal'>{FIELD_NAME}</td></tr>";
+		content += "<tr><td>Cumulative Production:</td><td style='white-space:normal'>" + cp + " " + units + "</td></tr>";
+		content += "<tr><td>Production Dates:</td><td style='white-space:normal'>" + cpf + to + cpt + "</td></tr>";
+		content += "<tr><td>Producing Zone:</td><td style='white-space:normal'>" + pf + "</td></tr>";
+		content += "<tr><td>Field:</td><td style='white-space:normal'>" + fn + "</td></tr>";
+		content += "<tr><td>KS DOR Lease Code:</td><td style='white-space:normal'>" + dor + "</td></tr>";
+		content += "<tr><td>KS DOR Lease Name:</td><td style='white-space:normal'>" + dorname + "</td></tr>";
 		content += "<tr><td>County:</td><td style='white-space:normal'>{NAME}</td></tr>";
 		content += "<tr><td>Section:</td><td>T{TOWNSHIP}S&nbsp;&nbsp;R{RANGE}{RANGE_DIRECTION}&nbsp;&nbsp;Sec {SECTION}</td></tr>";
-		content += "<tr><td>Quarter Section:</td><td>{SPOT}&nbsp;&nbsp;{SUBDIVISION_4_SMALLEST}&nbsp;&nbsp;{SUBDIVISION_3}&nbsp;&nbsp;{SUBDIVISION_2}&nbsp;&nbsp;{SUBDIVISION_1_LARGEST}</td></tr>";
+		content += "<tr><td>Quarter Section:</td><td>" + spot + "&nbsp;&nbsp;" + sub4 + "&nbsp;&nbsp;" + sub3 + "&nbsp;&nbsp;" + sub2 + "&nbsp;&nbsp;" + sub1 + "</td></tr>";
 		content += "<tr><td>Lease KID:</td><td id='lease-kid'>{KID}</td></tr>";
 		content += "</table>";
 
