@@ -678,7 +678,7 @@ function(
 
     function createDialogs() {
 		// Report problem dialog:
-		var probDia = "<table><tr><td class='find-label'>Message:</td><td><textarea rows='4' cols='25' id='prob-msg' placeholder='Well ID is automatically included. Please include email or phone number in case more information is needed.'></textarea></td></tr>";
+		var probDia = "<table><tr><td class='find-label'>Message:</td><td><textarea rows='4' cols='25' id='prob-msg' placeholder='Feaature ID is automatically included. Please include email or phone number in case more information is needed.'></textarea></td></tr>";
 		probDia += "<tr><td></td><td><button class='find-button' onclick='sendProblem()'>Send</button></td></tr>";
 		probDia += "<tr><td colspan='2'><span class='toc-note'>(report website problems or suggestions <a href='mailto:killion@kgs.ku.edu'>here)</a></span></td></tr></table>";
 
@@ -736,6 +736,11 @@ function(
 			var fId = sfa.KID;
 			var fName = sfa.LEASE_NAME + sfa.WELL_NAME;
 			var fType = "ogwell";
+			var otherId = "";
+		} else if ( sfa.hasOwnProperty("LEASE_NAME") ) {
+			var fId = sfa.KID;
+			var fName = sfa.LEASE_NAME;
+			var fType = "lease";
 			var otherId = "";
 		} else if ( sfa.hasOwnProperty("FIELD_NAME") ) {
 			var fId = sfa.FIELD_KID;

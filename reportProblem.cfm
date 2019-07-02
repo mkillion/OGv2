@@ -6,6 +6,8 @@
 	<cfset FType = "EARTHQUAKE EVENT: ">
 <cfelseif #form.type# eq "ogfield">
 	<cfset FType = "FIELD: ">
+<cfelseif #form.type# eq "lease">
+	<cfset FType = "LEASE: ">
 </cfif>
 
 <cfoutput>
