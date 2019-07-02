@@ -153,6 +153,10 @@ function(
   		source: "getWellNames.cfm"
 	} );
 
+	$( "#lease-name" ).autocomplete({
+  		source: "getLeaseNames.cfm"
+	} );
+
 	$( "#curr-op" ).autocomplete({
   		source: "getOperators.cfm"
 	} );
@@ -1225,6 +1229,11 @@ function(
 				fieldsLayer.visible = true;
                 $("#Oil-and-Gas-Fields input").prop("checked", true);
 				break;
+			case "leasename":
+				findParams.layerIds = [6];
+				findParams.searchFields = ["LEASE_NAME"];
+				findParams.searchText = dom.byId("lease-name").value;
+				break;
 			case "api":
 				var stcode = dojo.byId('api_state').value;
 				var cocode = dojo.byId('api_county').value;
@@ -1255,7 +1264,7 @@ function(
             zoomToFeature(response.results[0].feature);
 			return addPopupTemplate(response.results);
         } ).then(function(feature) {
-			if (what === "kgsnum" || what === "field" || what === "kgskid" || what === "wellname") {
+			if (what === "kgsnum" || what === "field" || what === "kgskid" || what === "wellname" || what === "leasename") {
 				openPopup(feature);
 			}
 		} );
@@ -1411,7 +1420,7 @@ function(
 		$("#twn, #rng, #sec, #datum, #lstCounty").prop("selectedIndex", 0);
 		$("#rngdir-w").prop("checked", "checked");
 		$("[name=welltype]").filter("[value='none']").prop("checked",true);
-		$("#api_state, #api_county, #api_number, #api_extension, #well-name, #lat, #lon, #field-select, #kgs-kid-num, #kgs-id-num").val("");
+		$("#api_state, #api_county, #api_number, #api_extension, #well-name, #lease-name, #lat, #lon, #field-select, #kgs-kid-num, #kgs-id-num").val("");
 	}
 
 
@@ -1499,6 +1508,12 @@ function(
         content += "<div class='find-body hide' id='find-wellname'>";
         content += "Well Name: <input type='text' id='well-name' size='18'><br>";
 		content += "<button class='find-button' onclick=findIt('wellname')>Find</button>";
+        content += "</div>";
+		// LEASE NAME:
+		content += "<div class='find-header esri-icon-right-triangle-arrow' id='leasename'><span class='find-hdr-txt'> Lease Name</span></div>";
+        content += "<div class='find-body hide' id='find-leasename'>";
+        content += "Lease Name: <input type='text' id='lease-name' size='18'><br>";
+		content += "<button class='find-button' onclick=findIt('leasename')>Find</button>";
         content += "</div>";
 		// FIELD:
         content += '<div class="find-header esri-icon-right-triangle-arrow" id="field"><span class="find-hdr-txt"> Field Name</span></div>';
