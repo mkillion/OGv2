@@ -1046,12 +1046,12 @@ function(
 		dom.byId("mapDiv").style.cursor = "auto";
 		view.popup.features = feature;
 		view.popup.visible = true;
-		if (feature.length > 1) {
-			if ( !feature[0].attributes.hasOwnProperty('INPUT_SEQ_NUMBER') ) {
-				// ^ don't add download icon to popup if it's a WWC5 well.
-				setTimeout(showPuDownloadIcon, 250);
-			}
-		}
+		// if (feature.length > 1) {
+		// 	if ( !feature[0].attributes.hasOwnProperty('INPUT_SEQ_NUMBER') ) {
+		// 		// ^ don't add download icon to popup if it's a WWC5 well.
+		// 		setTimeout(showPuDownloadIcon, 250);
+		// 	}
+		// }
     }
 
 
@@ -1565,7 +1565,7 @@ function(
         content += "<div class='panel-container' id='tools-panel'>";
         content += "<div class='panel-header'>Tools <img id='loader' class='hide' src='images/ajax-loader.gif'><span class='esri-icon-erase' title='Clear filters, buffers, graphics, and selected wells'></span></span><span class='esri-icon-question' title='Help'></span></div>";
         content += "<div class='panel-padding'>";
-		// Filter:
+		// FILTER WELLS:
 		content += "<div class='find-header esri-icon-right-triangle-arrow' id='filter-tool'><span class='find-hdr-txt tools-txt'> Filter Oil and Gas Wells</span></div>";
 		content += "<div class='find-body hide' id='find-filter-tool'>";
 		content += "<table><tr><td><span class='note'>Filters can be combined</span></td></tr>";
@@ -1588,6 +1588,15 @@ function(
 		content += "<tr><td colspan='2'><span class='date-pick'>Name: <input type='text' size='20' id='curr-op'></span></td></tr>";
 		content += "<tr><td><button class='find-button' onclick='filterOG()'>Apply Filter</button><button class='find-button' onclick='clearOGFilter()'>Reset</button></td></tr></table>";
 		content += "</div>";	// end filter div.
+		// FILTER LEASES:
+		content += "<div class='find-header esri-icon-right-triangle-arrow' id='filter-leases-tool'><span class='find-hdr-txt tools-txt'> Filter Leases</span></div>";
+		content += "<div class='find-body hide' id='find-filter-leases-tool'>";
+		content += "<table>";
+		content += "<tr><td colspan='2'>Current Operator:</td></tr>";
+		content += "<tr><td colspan='2'><span class='date-pick'>Name: <input type='text' size='20' id='curr-lease-op'></span></td></tr>";
+		content += "<tr><td colspan='2'><span class='date-pick'>Year: <input type='text' size='8' id='lease-year' placeholder='yyyy'></span></td></tr>";
+		content += "<tr><td><button class='find-button' onclick='filterOG()'>Apply Filter</button><button class='find-button' onclick='clearOGFilter()'>Reset</button></td></tr></table>";
+		content += "</div>";	// end filter leases div.
 		// buffer:
         content += "<div class='find-header esri-icon-right-triangle-arrow' id='buff-tool'><span class='find-hdr-txt tools-txt'> Buffer / Radius</span></div>";
 		content += "<div class='find-body hide' id='find-buff-tool'>";
