@@ -191,7 +191,7 @@ function(
 
 	var leasesLayer = new MapImageLayer( {
 		url: ogGeneralServiceURL,
-		id: "Oil and Gas Leases",
+		id: "Leases",
 		visible: false,
 		sublayers: [ {
 			id: 6
@@ -368,7 +368,7 @@ function(
         identifyParams = new IdentifyParameters();
 		identifyParams.returnGeometry = true;
         identifyParams.tolerance = (isMobile) ? 9 : 4;
-        identifyParams.layerIds = [0,6,5,4];
+        identifyParams.layerIds = [0,6,4,5];
         identifyParams.layerOption = "visible";
         identifyParams.width = view.width;
         identifyParams.height = view.height;
@@ -2104,6 +2104,11 @@ function(
 		userDefinedPoint = new Graphic();
 
         identifyTask.execute(identifyParams).then(function(response) {
+			for (var i = 0; i < response.results.length; i++) {
+				if (map.findLayerById(response.results[i].layerName).visible === false) {
+					response.results.splice(i, 1);
+				}
+			}
 			return addPopupTemplate(response.results);
         } ).then(function(feature) {
 			if (feature.length > 0) {
@@ -2112,14 +2117,14 @@ function(
             	openPopup(feature);
 
 				// Highlight row in wells list table: 20181019 - not used.
-				var fAtts = feature[0].attributes;
-				if (fAtts.hasOwnProperty('INPUT_SEQ_NUMBER')) {
-					var ptID = fAtts.INPUT_SEQ_NUMBER;
-				} else if (fAtts.hasOwnProperty('KID')) {
-					var ptID = fAtts.KID;
-				}
-				$(".well-list-tbl tr").removeClass("highlighted");
-				$(".well-list-tbl tr:contains(" + ptID + ")").toggleClass("highlighted");
+				// var fAtts = feature[0].attributes;
+				// if (fAtts.hasOwnProperty('INPUT_SEQ_NUMBER')) {
+				// 	var ptID = fAtts.INPUT_SEQ_NUMBER;
+				// } else if (fAtts.hasOwnProperty('KID')) {
+				// 	var ptID = fAtts.KID;
+				// }
+				// $(".well-list-tbl tr").removeClass("highlighted");
+				// $(".well-list-tbl tr:contains(" + ptID + ")").toggleClass("highlighted");
 
             	highlightFeature(feature);
 			} else {
