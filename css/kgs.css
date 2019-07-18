@@ -408,6 +408,10 @@ input[type=checkbox] {
 	text-decoration: none;
 }
 
+#pu-erase {
+	float: none;
+}
+
 .esri-icon-download {
 	color: #000 !important;
 	margin-right: 3px;

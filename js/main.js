@@ -1510,11 +1510,11 @@ function(
 		content += "<button class='find-button' onclick=findIt('wellname')>Find</button>";
         content += "</div>";
 		// LEASE NAME:
-		content += "<div class='find-header esri-icon-right-triangle-arrow' id='leasename'><span class='find-hdr-txt'> Lease Name</span></div>";
-        content += "<div class='find-body hide' id='find-leasename'>";
-        content += "Lease Name: <input type='text' id='lease-name' size='18'><br>";
-		content += "<button class='find-button' onclick=findIt('leasename')>Find</button>";
-        content += "</div>";
+		// content += "<div class='find-header esri-icon-right-triangle-arrow' id='leasename'><span class='find-hdr-txt'> Lease Name</span></div>";
+        // content += "<div class='find-body hide' id='find-leasename'>";
+        // content += "Lease Name: <input type='text' id='lease-name' size='18'><br>";
+		// content += "<button class='find-button' onclick=findIt('leasename')>Find</button>";
+        // content += "</div>";
 		// FIELD:
         content += '<div class="find-header esri-icon-right-triangle-arrow" id="field"><span class="find-hdr-txt"> Field Name</span></div>';
         content += '<div class="find-body hide" id="find-field">';
@@ -1589,14 +1589,14 @@ function(
 		content += "<tr><td><button class='find-button' onclick='filterOG()'>Apply Filter</button><button class='find-button' onclick='clearOGFilter()'>Reset</button></td></tr></table>";
 		content += "</div>";	// end filter div.
 		// FILTER LEASES:
-		content += "<div class='find-header esri-icon-right-triangle-arrow' id='filter-leases-tool'><span class='find-hdr-txt tools-txt'> Filter Leases</span></div>";
-		content += "<div class='find-body hide' id='find-filter-leases-tool'>";
-		content += "<table>";
-		content += "<tr><td colspan='2'>Current Operator:</td></tr>";
-		content += "<tr><td colspan='2'><span class='date-pick'>Name: <input type='text' size='20' id='curr-lease-op'></span></td></tr>";
-		content += "<tr><td colspan='2'><span class='date-pick'>Year: <input type='text' size='8' id='lease-year' placeholder='yyyy'></span></td></tr>";
-		content += "<tr><td><button class='find-button' onclick='filterOG()'>Apply Filter</button><button class='find-button' onclick='clearOGFilter()'>Reset</button></td></tr></table>";
-		content += "</div>";	// end filter leases div.
+		// content += "<div class='find-header esri-icon-right-triangle-arrow' id='filter-leases-tool'><span class='find-hdr-txt tools-txt'> Filter Leases</span></div>";
+		// content += "<div class='find-body hide' id='find-filter-leases-tool'>";
+		// content += "<table>";
+		// content += "<tr><td colspan='2'>Current Operator:</td></tr>";
+		// content += "<tr><td colspan='2'><span class='date-pick'>Name: <input type='text' size='20' id='curr-lease-op'></span></td></tr>";
+		// content += "<tr><td colspan='2'><span class='date-pick'>Year: <input type='text' size='8' id='lease-year' placeholder='yyyy'></span></td></tr>";
+		// content += "<tr><td><button class='find-button' onclick='filterOG()'>Apply Filter</button><button class='find-button' onclick='clearOGFilter()'>Reset</button></td></tr></table>";
+		// content += "</div>";	// end filter leases div.
 		// buffer:
         content += "<div class='find-header esri-icon-right-triangle-arrow' id='buff-tool'><span class='find-hdr-txt tools-txt'> Buffer / Radius</span></div>";
 		content += "<div class='find-body hide' id='find-buff-tool'>";
@@ -2106,6 +2106,7 @@ function(
         identifyTask.execute(identifyParams).then(function(response) {
 			for (var i = 0; i < response.results.length; i++) {
 				if (map.findLayerById(response.results[i].layerName).visible === false) {
+					// If layer isn't visible in TOC, remove it so it's not included in popup.
 					response.results.splice(i, 1);
 				}
 			}
@@ -2228,7 +2229,7 @@ function(
 
 
 	function ogFieldContent(feature) {
-		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;field&quot;);' title='View KGS Field Production Page'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span><span class='esri-icon-environment-settings pu-icon' onclick='showAssignedWells({FIELD_KID});' title='Show Wells Assigned to this Field'></span>";
+		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;field&quot;);' title='View KGS Field Production Page'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span><span class='esri-icon-environment-settings pu-icon' onclick='showAssignedWells({FIELD_KID});' title='Show Wells Assigned to this Field'></span><span class='esri-icon-erase' id='pu-erase' onclick='clearOGFilter()' title='Clear filters, buffers, graphics, and selected wells'></span>";
 		content += "<table id='popup-tbl'><tr><td>Field Name:</td><td>{FIELD_NAME}</td></tr>";
 		content += "<tr><td>Status:</td><td style='white-space:normal'>{STATUS}</td></tr>";
 		content += "<tr><td>Type of Field:</td><td style='white-space:normal'>{FIELD_TYPE}</td></tr>";
@@ -2337,7 +2338,7 @@ function(
 			dorname = f.LEASE_NAME_DOR;
 		}
 
-		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;lease&quot;);' title='View KGS Lease Production Page'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span><span class='esri-icon-environment-settings pu-icon' onclick='showLeaseWells({FIELD_KID});' title='Show Wells For This Lease'></span>";
+		var content = "<span class='esri-icon-table pu-icon' onclick='showFullInfo(&quot;lease&quot;);' title='View KGS Lease Production Page'></span><span class='esri-icon-contact pu-icon' onclick='$(&quot;#prob-dia&quot;).dialog(&quot;open&quot;);' title='Report a Location or Data Problem'></span>";
 		content += "<table id='popup-tbl'><tr><td>Lease Name:</td><td>{LEASE_NAME}</td></tr>";
 		content += "<tr><td>Operator:</td><td style='white-space:normal'>{OPERATOR_NAME}</td></tr>";
 		content += "<tr><td>Produces Oil:</td><td style='white-space:normal'>{PRODUCES_OIL}</td></tr>";
@@ -2359,7 +2360,8 @@ function(
 
 
 	showAssignedWells = function(fieldKID) {
-		ogLayer.findSublayerById(0).definitionExpression = "FIELD_KID = " + fieldKID;;
+		ogLayer.findSublayerById(0).definitionExpression = "FIELD_KID = " + fieldKID;
+		idDef[0] = "FIELD_KID = " + fieldKID;
 	}
 
 
