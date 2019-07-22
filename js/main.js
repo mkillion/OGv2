@@ -145,20 +145,24 @@ function(
     // Combo boxes:
     // /var autocomplete =  (isMobile) ? false : true; // auto-complete doesn't work properly on mobile (gets stuck on a name and won't allow further typing), so turn it off.
 
-	$( "#field-select" ).autocomplete({
+	$( "#field-select" ).autocomplete( {
   		source: "getFieldNames.cfm"
 	} );
 
-	$( "#well-name" ).autocomplete({
+	$( "#well-name" ).autocomplete( {
   		source: "getWellNames.cfm"
 	} );
 
-	$( "#lease-name" ).autocomplete({
+	$( "#lease-name" ).autocomplete( {
   		source: "getLeaseNames.cfm"
 	} );
 
-	$( "#curr-op" ).autocomplete({
+	$( "#curr-op" ).autocomplete( {
   		source: "getOperators.cfm"
+	} );
+
+	$( "#curr-lease-op" ).autocomplete( {
+  		source: "getLeaseOperators.cfm"
 	} );
 
     // End framework.
@@ -615,6 +619,7 @@ function(
 		clearBufferControls();
 		clearOGFilter();
 		clearWWC5Filter();
+		clearLeaseFilter();
 		distanceWidget.viewModel.clearMeasurement();
 		areaWidget.viewModel.clearMeasurement();
     } );
@@ -765,6 +770,14 @@ function(
 		  }
 		} );
 		$("#prob-dia").dialog("close");
+	}
+
+
+	filterLeases = function() {
+		var whereClause = "operator_name = '" + $("#curr-lease-op").val() + "'";
+		
+		leasesLayer.findSublayerById(6).definitionExpression = whereClause;
+		idDef[6] = whereClause;
 	}
 
 
@@ -1589,14 +1602,15 @@ function(
 		content += "<tr><td><button class='find-button' onclick='filterOG()'>Apply Filter</button><button class='find-button' onclick='clearOGFilter()'>Reset</button></td></tr></table>";
 		content += "</div>";	// end filter div.
 		// FILTER LEASES:
-		// content += "<div class='find-header esri-icon-right-triangle-arrow' id='filter-leases-tool'><span class='find-hdr-txt tools-txt'> Filter Leases</span></div>";
-		// content += "<div class='find-body hide' id='find-filter-leases-tool'>";
-		// content += "<table>";
-		// content += "<tr><td colspan='2'>Current Operator:</td></tr>";
-		// content += "<tr><td colspan='2'><span class='date-pick'>Name: <input type='text' size='20' id='curr-lease-op'></span></td></tr>";
+		content += "<div class='find-header esri-icon-right-triangle-arrow' id='filter-leases-tool'><span class='find-hdr-txt tools-txt'> Filter Leases</span></div>";
+		content += "<div class='find-body hide' id='find-filter-leases-tool'>";
+		content += "<table>";
+		content += "<tr><td colspan='2'>Current Operator:</td></tr>";
+		content += "<tr><td colspan='2'><span class='date-pick'>Name: </td></tr>";
+		content += "<tr><td colspan='2'><input type='text' size='28' id='curr-lease-op'></span></td></tr>";
 		// content += "<tr><td colspan='2'><span class='date-pick'>Year: <input type='text' size='8' id='lease-year' placeholder='yyyy'></span></td></tr>";
-		// content += "<tr><td><button class='find-button' onclick='filterOG()'>Apply Filter</button><button class='find-button' onclick='clearOGFilter()'>Reset</button></td></tr></table>";
-		// content += "</div>";	// end filter leases div.
+		content += "<tr><td><button class='find-button' onclick='filterLeases()'>Apply Filter</button><button class='find-button' onclick='clearLeaseFilter()'>Reset</button></td></tr></table>";
+		content += "</div>";	// end filter leases div.
 		// buffer:
         content += "<div class='find-header esri-icon-right-triangle-arrow' id='buff-tool'><span class='find-hdr-txt tools-txt'> Buffer / Radius</span></div>";
 		content += "<div class='find-body hide' id='find-buff-tool'>";
@@ -1733,6 +1747,13 @@ function(
 		ogLayer.findSublayerById(0).definitionExpression = "";
 		idDef[0] = "";
 		identifyParams.layerDefinitions = idDef;
+	}
+
+
+	clearLeaseFilter = function() {
+		$("#curr-lease-op").val("");
+		leasesLayer.findSublayerById(6).definitionExpression = "";
+		idDef[6] = "";
 	}
 
 
