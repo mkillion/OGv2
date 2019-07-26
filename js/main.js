@@ -1325,15 +1325,15 @@ function(
 
 		var printTask = new PrintTask( {url: "https://services.kgs.ku.edu/arcgis8/rest/services/util/ExportWebMap/GPServer/Export%20Web%20Map"} );
 
-		if ( $("#incl-legend").is(":checked") ) {
-			var legLyrs = new LegendLayer( {layerId: "Oil and Gas Wells"} );
-			var legendLyrs = [legLyrs];
-			var legendTitle = "Oil and Gas Wells";
-		} else {
-			console.log("no legend");
-			var legendLyrs = [];
-			var legendTitle = "";
-		}
+		// if ( $("#incl-legend").is(":checked") ) {
+		// 	var legLyrs = new LegendLayer( {layerId: "Oil and Gas Wells"} );
+		// 	var legendLyrs = [legLyrs];
+		// 	var legendTitle = "Oil and Gas Wells";
+		// } else {
+		// 	console.log("no legend");
+		// 	var legendLyrs = [];
+		// 	var legendTitle = "";
+		// }
 
 		var template = new PrintTemplate( {
 			format: dom.byId("file-format").value,
@@ -1344,9 +1344,9 @@ function(
 		 	layoutOptions: {
 		   		titleText: dom.byId("map-title").value,
 		   		authorText: "Kansas Geological Survey - https://maps.kgs.ku.edu/oilgas",
-				scalebarUnit: "Miles",
-				legendLayers: legendLyrs,
-				copyrightText: legendTitle	// Highjacking this text element to display legend title info (in custom templates - Templates_Custom folder).
+				scalebarUnit: "Miles"
+				// legendLayers: legendLyrs,
+				// copyrightText: legendTitle	// Highjacking this text element to display legend title info (in custom templates - Templates_Custom folder).
 		 	}
 		} );
 
@@ -1694,7 +1694,7 @@ function(
 		// content += "<option value='svg'>SVG</option>";
 		// content += "<option value='svgz'>SVGZ</option>";
 		content += "</select></div>";
-		content += "<div class='print-ui'><input type='checkbox' id='incl-legend' checked>Include legend</div>";
+		// content += "<div class='print-ui'><input type='checkbox' id='incl-legend' checked>Include legend</div>";
 		content += "<div class='print-ui'><button id='print-btn' class='find-button' onclick='printMap()'>Print / Save</button><img id='loader3' class='hide' src='images/ajax-loader.gif'>";
 		content += "<div id='print-link'></div>";
 		content += '</div></div>';	// end print div.
