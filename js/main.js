@@ -775,9 +775,12 @@ function(
 
 	filterLeases = function() {
 		var whereClause = "operator_name = '" + $("#curr-lease-op").val() + "'";
-		
+
 		leasesLayer.findSublayerById(6).definitionExpression = whereClause;
 		idDef[6] = whereClause;
+
+		view.center = [-98, 39.1];
+		view.zoom = 7;
 	}
 
 
