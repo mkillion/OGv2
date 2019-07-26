@@ -1710,6 +1710,7 @@ function(
         content += "<div class='panel-container'>";
 		content += "<div class='panel-header'>Links <span class='esri-icon-erase' title='Clear filters, buffers, graphics, and selected wells'></span></span><span class='esri-icon-question' title='Help'></span></div>";
 		content += "<div>";
+		content += "<a href='http://www.kgs.ku.edu/Geophysics/Earthquakes/index.html' target='_blank'>Kansas Earthquakes</a><p>";
 		content += "<a href='http://www.kgs.ku.edu' target='_blank'>KGS Home Page</a><p>";
 		content += "<a href='http://www.kgs.ku.edu/PRS/petroDB.html' target='_blank'>KGS Oil and Gas Database</a><p>";
 		content += "<a href='https://maps.kgs.ku.edu/wwc5' target='_blank'>KGS WWC5 Water Well Mapper</a><p>";
