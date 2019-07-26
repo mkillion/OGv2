@@ -779,6 +779,9 @@ function(
 		leasesLayer.findSublayerById(6).definitionExpression = whereClause;
 		idDef[6] = whereClause;
 
+		$("#Leases input:checkbox").prop( "checked", true );
+		leasesLayer.visible = true;
+
 		view.center = [-98, 39.1];
 		view.zoom = 7;
 	}
@@ -1064,7 +1067,7 @@ function(
 		view.popup.visible = true;
 		// if (feature.length > 1) {
 		// 	if ( !feature[0].attributes.hasOwnProperty('INPUT_SEQ_NUMBER') ) {
-		// 		// ^ don't add download icon to popup if it's a WWC5 well.
+		// 		// ^ add download icon to popup only if it's not a WWC5 well.
 		// 		setTimeout(showPuDownloadIcon, 250);
 		// 	}
 		// }
