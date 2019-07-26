@@ -1082,8 +1082,12 @@ function(
     function urlZoom(urlParams) {
         var items = urlParams.split("&");
         if (items.length > 1) {
-            var extType = items[0].substring(2);
-            var extValue = items[1].substring(2);
+			// when using "t" and "v":
+            // var extType = items[0].substring(2);
+            // var extValue = items[1].substring(2);
+			// when using "extenttype" and "extentvalue":
+			var extType = items[0].substring(11);
+            var extValue = items[1].substring(12);
 
 			if (extValue == -999) {
 				// Zoom to statewide extent.
