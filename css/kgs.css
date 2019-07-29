@@ -89,6 +89,22 @@ th, td {
 	z-index: 11;
 }
 
+#api_state {
+	width: 20px;
+}
+
+#api_county {
+	width: 30px;
+}
+
+#api_number {
+	width: 45px;
+}
+
+#api_extension {
+	width: 40px;
+}
+
 #ovmap {
 	height: 100%;
 	width: 100%;

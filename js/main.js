@@ -48,6 +48,7 @@ require([
 	"esri/widgets/AreaMeasurement2D",
 	"esri/widgets/AreaMeasurement2D/AreaMeasurement2DViewModel",
 	"esri/widgets/Sketch",
+	"esri/core/urlUtils",
     "dojo/domReady!"
 ],
 function(
@@ -98,8 +99,16 @@ function(
 	DistanceMeasurement2DViewModel,
 	AreaMeasurement2D,
 	AreaMeasurement2DViewModel,
-	Sketch
+	Sketch,
+	urlUtils
 ) {
+	urlUtils.addProxyRule(
+ 		{
+         	urlPrefix: "http://kars.ku.edu/arcgis/rest/services/Sgpchat/SouthernGreatPlainsCrucialHabitatAssessmentToolLPCCrucialHabitat/MapServer",
+         	proxyUrl: "//maps.kgs.ku.edu/dot/proxy.jsp"
+     	}
+	);
+
     var isMobile = WURFL.is_mobile;
 	var idDef = [];
 	var wmSR = new SpatialReference(3857);
@@ -191,7 +200,7 @@ function(
 	// var hroImageryLayer = new ImageryLayer( {url:"//services.kansasgis.org/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_HRO_2014_Color/ImageServer", id:"2014 HRO", visible:false} );
 	var countyLayer = new MapImageLayer( {url:wwc5GeneralServiceURL, sublayers:[{id:0}], id:"Counties", visible:true} );
 	var fieldsLayer = new MapImageLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_fields/MapServer", id:"Oil and Gas Fields", visible:false} );
-	// var lpcLayer = new MapImageLayer( {url:"http://kars.ku.edu/arcgis/rest/services/Sgpchat/SouthernGreatPlainsCrucialHabitatAssessmentToolLPCCrucialHabitat/MapServer", id:"LPC Habitat", visible: false} );
+	var lpcLayer = new MapImageLayer( {url:"http://kars.ku.edu/arcgis/rest/services/Sgpchat/SouthernGreatPlainsCrucialHabitatAssessmentToolLPCCrucialHabitat/MapServer", id:"LPC Habitat", visible: false} );
 
 	var leasesLayer = new MapImageLayer( {
 		url: ogGeneralServiceURL,
@@ -310,7 +319,7 @@ function(
 			naip2015Layer,
 			naip2017Layer,
 			topoLayer,
-			// lpcLayer,
+			lpcLayer,
 			fieldsLayer,
 			plssLayer,
 			leasesLayer,
@@ -589,12 +598,11 @@ function(
 			{
 				layer: leasesLayer,
 				title: "Leases"
+			},
+			{
+				layer: lpcLayer,
+				title: "Lesser Prairie Chicken Habitat"
 			}
-			// ,
-			// {
-			// 	layer: lpcLayer,
-			// 	title: "Lesser Prairie Chicken Habitat"
-			// }
  		]
  	}, "legend-content" );
 
@@ -1945,10 +1953,10 @@ function(
 		// $("#aquifer-group-body").html(aquiferTocContent);
 
 		// Prairie chicken specific stuff:
-		// $("label:contains('LPC Habitat')").after("<span class='esri-icon-description' id='lpc-disclaimer'></span>");
-		// $("#lpc-disclaimer").click(function() {
-		// 	$("#lpc-dia").dialog("open");
-		// } );
+		$("label:contains('LPC Habitat')").after("<span class='esri-icon-description' id='lpc-disclaimer'></span>");
+		$("#lpc-disclaimer").click(function() {
+			$("#lpc-dia").dialog("open");
+		} );
 
 		// Click handlers for TOC groups:
 		$(".group-hdr").click(function() {
