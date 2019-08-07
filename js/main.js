@@ -178,7 +178,7 @@ function(
 
     // Create map and map widgets:
     var wwc5GeneralServiceURL = "//services.kgs.ku.edu/arcgis8/rest/services/wwc5/wwc5_v2/MapServer";
-	var ogGeneralServiceURL = "//services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_v2/MapServer";
+	var ogGeneralServiceURL = "//services.kgs.ku.edu/arcgis2/rest/services/oilgas/oilgas_v2/MapServer";
     var identifyTask, identifyParams;
     var findTask = new FindTask(ogGeneralServiceURL);
     var findParams = new FindParameters();
@@ -199,7 +199,7 @@ function(
     var doqq1991Layer = new ImageryLayer( {url:"//services.kgs.ku.edu/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_DOQQ_1991/ImageServer", id:"1991", visible:false} );
 	// var hroImageryLayer = new ImageryLayer( {url:"//services.kansasgis.org/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_HRO_2014_Color/ImageServer", id:"2014 HRO", visible:false} );
 	var countyLayer = new MapImageLayer( {url:wwc5GeneralServiceURL, sublayers:[{id:0}], id:"Counties", visible:true} );
-	var fieldsLayer = new MapImageLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_fields/MapServer", id:"Oil and Gas Fields", visible:false} );
+	var fieldsLayer = new TileLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_fields/MapServer", id:"Oil and Gas Fields", visible:false} );
 	var lpcLayer = new MapImageLayer( {url:"http://kars.ku.edu/arcgis/rest/services/Sgpchat/SouthernGreatPlainsCrucialHabitatAssessmentToolLPCCrucialHabitat/MapServer", id:"LPC Habitat", visible: false} );
 
 	var leasesLayer = new MapImageLayer( {
@@ -1270,7 +1270,7 @@ function(
 				var cocode = dojo.byId('api_county').value;
 				var apicode = dojo.byId('api_number').value;
 
-				var qt = new QueryTask( {url:"http://services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_v2/MapServer/0"} );
+				var qt = new QueryTask( {url:"http://services.kgs.ku.edu/arcgis2/rest/services/oilgas/oilgas_v2/MapServer/0"} );
 				var query = new Query();
     			query.returnGeometry = true;
     			query.where = "STATE_CODE = " + stcode + " and COUNTY_CODE = " + cocode + " and API_WELL_NUMBER = " + apicode;
