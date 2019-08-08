@@ -1338,7 +1338,8 @@ function(
 		$("#loader3").show();
 		$("#print-link").html("");
 
-		var printTask = new PrintTask( {url: "https://services.kgs.ku.edu/arcgis8/rest/services/util/ExportWebMap/GPServer/Export%20Web%20Map"} );
+		// var printTask = new PrintTask( {url: "https://services.kgs.ku.edu/arcgis8/rest/services/util/ExportWebMap/GPServer/Export%20Web%20Map"} );
+		var printTask = new PrintTask( {url: "http://services.kgs.ku.edu/arcgis2/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"} );
 
 		// if ( $("#incl-legend").is(":checked") ) {
 		// 	var legLyrs = new LegendLayer( {layerId: "Oil and Gas Wells"} );
