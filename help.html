@@ -29,7 +29,7 @@
 
 <body>
 <img src="images/kgs_logo.png">
-<h2>WWC5 Water Well Mapper Help Page</h2>
+<h2>Oil and Gas Mapper Help Page</h2>
 <div class="help">
     Contents:
     <uL>
@@ -39,7 +39,8 @@
         <li><a href="#go">Go To Panel</a></li>
         <li><a href="#tools">Tools Panel</a></li>
         <li><a href="#map">Map Window</a></li>
-        <li><a href="#popup">Popup Window</a></li>
+        <li><a href="#popup">Wells Popup Window</a></li>
+        <li><a href="#popup2">Fields Popup Window</a></li>
     </ul>
 
     <hr>
@@ -47,8 +48,8 @@
     <div id="contact">
         <h3>Contact KGS</h3>
         <ul>
-            <li>For questions about water wells and WWC5 data, contact the <a href="mailto:datares@kgs.ku.edu">Data Resources Library</a> (785-864-2161).</li>
-            <li>For technical questions about the map viewer, contact <a href="mailto:killion@kgs.ku.edu?subject=KGS WWC5 map viewer">GIS Services</a> (785-864-2131).</li>
+            <li>For questions about oil and gas wells, or oil and gas data, contact the <a href="mailto:datares@kgs.ku.edu">Data Resources Library</a> (785-864-2161).</li>
+            <li>For technical questions about the map viewer, contact <a href="mailto:killion@kgs.ku.edu?subject=KGS oil and gas map viewer">GIS Services</a> (785-864-2131).</li>
         </ul>
     </div>
 
@@ -57,8 +58,8 @@
     <div id="general">
         <h3>General Info</h3>
         <ul>
-            <li>The mapper is now mobile friendly, optimized for use on desktop computers, tablets, and most phones. To go directly to the mapper without going through the KGS website, bookmark this link: <a href="https://maps.kgs.ku.edu/wwc5">WWC5 Mapper</a></li>
-            <li>Settings such as layer visibility, labeling, classification, bookmarks, and last location are now saved between sessions by default. To completely clear these settings, clear the browser's history, including cookies.</li>
+            <li>The mapper is now mobile friendly, optimized for use on desktop computers, tablets, and most phones. To go directly to the mapper without going through the KGS website, bookmark this link: <a href="https://maps.kgs.ku.edu/oilgas">Oil and Gas Mapper</a></li>
+            <li>Settings such as layer visibility, labeling, bookmarks, and last location are now saved between sessions by default. To completely clear these settings, clear the browser's history, including cookies.</li>
             <li>The map can now be printed directly from the browser's Print command - use this option to include the well information popup. Or use the Print / Save Map tool to save the map to a PDF or other image format, with title and other map elements.</li>
             <li>In addition to the zoom buttons, you can zoom in by holding the Shift key and drawing a box with the mouse.</li>
         <ul>
@@ -68,20 +69,34 @@
 
     <div id="display">
         <h3>Display Panel</h3>
-        <img src="images/display_help.png">
+        <img src="images/og_display_help.png">
     </div>
 
     <hr>
 
     <div id="go">
         <h3>Go To Panel</h3>
-        <img src="images/goto_help.png">
+        <img src="images/og_goto_help.png">
     </div>
 
     <hr>
 
     <div id="tools">
         <h3>Tools Panel</h3>
+        <div>Filter Oil and Gas Wells
+            <ul>
+                <li>Restrict which wells are visible on the map (and included in downloaded text files) by applying a filter.</li>
+                <li>Filters are cumulative - e.g. "has a core sample AND was completed after 01/01/2000."</li>
+                <li>Click the Reset button to clear the filter and reset all input fields. Clicking the eraser icon at the top of the panel will also clear the filter.</li>
+            <ul>
+        </div>
+        
+        <div> Filter Leases
+        	<ul>
+				<li>Filter leases by operator name.</li>
+			</ul>
+        </div>
+        
         <div>Buffer / Radius
             <ul>
                 <li>Creates a buffer of a specified radius around a selected well, user-defined point, or searched address.</li>
@@ -91,17 +106,16 @@
                 <li>Click on the eraser icon at the top of the panel to erase graphics and clear all buffers and filters.</li>
             </ul>
         </div>
-        <div>Classify Wells
-            <ul><li>Select a variable on which to color-code wells. Click on the Links/Legend panel to view the legend.</li></ul>
-        </div>
-        <div>Download Data
+        
+        <div>Download Oil and Gas Well Data
             <ul>
-                <li>Creates comma-delimited text files with well and lithologic log information for wells visible <u>in the current map extent</u>.</li>
+                <li>Creates comma-delimited text files with well, tops, log, LAS, cuttings, and core information for wells visible <u>in the current map extent</u>.</li>
                 <li>Only wells visible on the map will be included in the download files. Applying a filter will restrict which wells are included.</li>
-        		<li>For other options to download well data visit the <a href='http://www.kgs.ku.edu/Magellan/WaterWell/index.html' target='_blank'>WWC5 Database</a>.</li>
-        		<li>To download a shapefile of all WWC5 wells, visit the <a href='https://kansasgis.org/index.cfm' target='_blank'>DASC catalog</a>.</li>
+        		<li>For other options to download well data visit the <a href='http://www.kgs.ku.edu/PRS/petroDB.html' target='_blank'>Oil and Gas Database page</a>.</li>
+        		<li>To download a shapefile of all oil and gas wells, visit the <a href='https://kansasgis.org/index.cfm' target='_blank'>DASC catalog</a> and select "Utilities and Energy Resources".</li>
         	</ul>
         </div>
+        
         <div>Draw
             <ul>
                 <li>Select the appropriate tool to draw point, line, rectangle, circle, and freehand polygon graphics on the map.</li>
@@ -111,15 +125,11 @@
                 <li>The drawing graphic and selected wells can be cleared by clicking the Clear button in the Draw tool or the eraser icon at the top of the panel.</li>
             </ul>
         </div>
-        <div>Filter Wells
-            <ul>
-                <li>Restrict which wells are visible on the map (and included in downloaded text files) by applying a filter.</li>
-                <li>Filters are cumulative - e.g. "wells that are domestic AND were completed after 01/23/2015."</li>
-                <li>Click the Reset button to clear the filter and reset all input fields. Clicking the eraser icon at the top of the panel will also clear the filter.</li>
-        </div>
-        <div>Label Wells
+        
+        <div>Label Oil and Gas Wells
             <ul><li>Select a variable to label well symbols.</li></ul>
         </div>
+        
         <div>Measure Area and Distance
             <ul>
                 <li>Select "New Measurement" from either the Area or Distance section to begin a measurement.</li>
@@ -128,16 +138,17 @@
                 <li>Clear the measurement and graphic by clicking the Clear Area/Distance Measurement buttons in the Measure tool or the eraser icon at the top of the tools panel.</li>
             </ul>
         </div>
+        
         <div>Print / Save Map
             <ul>
                 <li>Enter a title for the map (optional).</li>
                 <li>Select page layout and size.</li>
                 <li>Select output format.</li>
-                <li>Checking the "Include legend" checkbox will put a legend of wells symbols at the bottom of the printout.</li>
                 <li>When the export is finished (may take up to 60 seconds or so), a download link will appear beneath the "Print / Save Map" button.</li>
                 <li>The map (map image only) can also be printed using the browser's Print command.</li>
             </ul>
         </div>
+        
     </div>
 
     <hr>
@@ -148,14 +159,19 @@
             <li> On mobile devices, a Locate button &nbsp;<img src="images/locate.png" height="20px" width="20px">&nbsp; will appear beneath the Zoom In/Out buttons. <br>
                 Tapping the Locate button will zoom the map to your present location.</li>
         </ul>
-        <img src="images/map_help.png">
+        <img src="images/og_map_help.png">
     </div>
 
     <hr>
 
     <div id="popup">
-        <h3>Popup Window</h3>
-        <img src="images/popup_help.png">
+        <h3>Wells Popup Window</h3>
+        <img src="images/og_well_popup_help.png">
+    </div>
+    
+    <div id="popup2">
+        <h3>Fields Popup Window</h3>
+        <img src="images/og_field_popup_help.png">
     </div>
 </div>
 
