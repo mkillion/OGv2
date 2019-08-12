@@ -938,10 +938,11 @@ function(
 		graphicsLayer.add(bufferGraphic);
 		graphicsLayer.visible = true;
 
-		view.goTo( {
-			target: buffPoly.extent,
-			scale: 18000
-		}, {duration: 500} );
+		// view.goTo( {
+		// 	target: buffPoly.extent,
+		// 	scale: 18000
+		// }, {duration: 500} );
+		view.extent = buffPoly.extent;
 
 		if ( $("#sel-wwc5-wells").is(":checked") ) {
 			createWWC5GeomWhere(buffPoly);
