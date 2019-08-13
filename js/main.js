@@ -199,7 +199,7 @@ function(
     var doqq1991Layer = new ImageryLayer( {url:"//services.kgs.ku.edu/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_DOQQ_1991/ImageServer", id:"1991", visible:false} );
 	// var hroImageryLayer = new ImageryLayer( {url:"//services.kansasgis.org/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_HRO_2014_Color/ImageServer", id:"2014 HRO", visible:false} );
 	var countyLayer = new MapImageLayer( {url:wwc5GeneralServiceURL, sublayers:[{id:0}], id:"Counties", visible:true} );
-	var fieldsLayer = new TileLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_fields/MapServer", id:"Oil and Gas Fields", visible:false} );
+	var fieldsLayer = new TileLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_fields_2/MapServer", id:"Oil and Gas Fields", visible:false} );
 	var lpcLayer = new MapImageLayer( {url:"http://kars.ku.edu/arcgis/rest/services/Sgpchat/SouthernGreatPlainsCrucialHabitatAssessmentToolLPCCrucialHabitat/MapServer", id:"LPC Habitat", visible: false} );
 
 	var leasesLayer = new MapImageLayer( {
@@ -1693,6 +1693,7 @@ function(
 		// Print/save:
 		content += "<div class='find-header esri-icon-right-triangle-arrow' id='print-tool'><span class='find-hdr-txt tools-txt'> Print / Save Map</span></div>";
 		content += "<div class='find-body hide' id='find-print-tool'>";
+		content += "<div class='print-ui'><span class='note'>The browser's print command can also be used to print the map (image only)</span></div>";
 		content += "<div class='print-ui'>Title<br><input type='text' size='28' id='map-title' placeholder='optional'></div>";
 		content += "<div class='print-ui'>Page setup<br><select id='page-setup'>";
 		content += "<option value='letter-ansi-a-landscape'>Letter ANSI A Landscape</option>";
