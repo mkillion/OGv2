@@ -178,7 +178,7 @@ function(
 
     // Create map and map widgets:
     var wwc5GeneralServiceURL = "//services.kgs.ku.edu/arcgis8/rest/services/wwc5/wwc5_v2/MapServer";
-	var ogGeneralServiceURL = "//services.kgs.ku.edu/arcgis2/rest/services/oilgas/oilgas_v2/MapServer";
+	var ogGeneralServiceURL = "//services.kgs.ku.edu/arcgis2/rest/services/oilgas/oilgas_general/MapServer";
     var identifyTask, identifyParams;
     var findTask = new FindTask(ogGeneralServiceURL);
     var findParams = new FindParameters();
@@ -1271,7 +1271,7 @@ function(
 				var cocode = dojo.byId('api_county').value;
 				var apicode = dojo.byId('api_number').value;
 
-				var qt = new QueryTask( {url:"http://services.kgs.ku.edu/arcgis2/rest/services/oilgas/oilgas_v2/MapServer/0"} );
+				var qt = new QueryTask( {url:"http://services.kgs.ku.edu/arcgis2/rest/services/oilgas/oilgas_general/MapServer/0"} );
 				var query = new Query();
     			query.returnGeometry = true;
     			query.where = "STATE_CODE = " + stcode + " and COUNTY_CODE = " + cocode + " and API_WELL_NUMBER = " + apicode;
