@@ -199,7 +199,7 @@ function(
     var doqq1991Layer = new ImageryLayer( {url:"//services.kgs.ku.edu/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_DOQQ_1991/ImageServer", id:"1991", format:"jpg", visible:false} );
 	// var hroImageryLayer = new ImageryLayer( {url:"//services.kansasgis.org/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_HRO_2014_Color/ImageServer", id:"2014 HRO", visible:false} );
 	var countyLayer = new MapImageLayer( {url:wwc5GeneralServiceURL, sublayers:[{id:0}], id:"Counties", visible:true} );
-	var fieldsLayer = new TileLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_fields_2/MapServer", id:"Oil and Gas Fields", visible:false} );
+	var fieldsLayer = new MapImageLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_fields_3/MapServer", id:"Oil and Gas Fields", visible:false} );
 	var lpcLayer = new MapImageLayer( {url:"http://kars.ku.edu/arcgis/rest/services/Sgpchat/SouthernGreatPlainsCrucialHabitatAssessmentToolLPCCrucialHabitat/MapServer", id:"LPC Habitat", visible: false} );
 
 	var leasesLayer = new MapImageLayer( {
