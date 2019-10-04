@@ -199,7 +199,7 @@ function(
     var doqq1991Layer = new ImageryLayer( {url:"//services.kgs.ku.edu/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_DOQQ_1991/ImageServer", id:"1991", format:"jpg", visible:false} );
 	// var hroImageryLayer = new ImageryLayer( {url:"//services.kansasgis.org/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_HRO_2014_Color/ImageServer", id:"2014 HRO", visible:false} );
 	var countyLayer = new MapImageLayer( {url:wwc5GeneralServiceURL, sublayers:[{id:0}], id:"Counties", visible:true} );
-	var fieldsLayer = new MapImageLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_fields_3/MapServer", id:"Oil and Gas Fields", visible:false} );
+	var fieldsLayer = new MapImageLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_fields_4/MapServer", id:"Oil and Gas Fields", visible:false} );
 	var lpcLayer = new MapImageLayer( {url:"http://kars.ku.edu/arcgis/rest/services/Sgpchat/SouthernGreatPlainsCrucialHabitatAssessmentToolLPCCrucialHabitat/MapServer", id:"LPC Habitat", visible: false} );
 
 	var leasesLayer = new MapImageLayer( {
@@ -2225,20 +2225,18 @@ function(
 
 		var nsDir = f.FEET_NORTH_FROM_REFERENCE < 0 ? "South" : "North";
 		var ewDir = f.FEET_EAST_FROM_REFERENCE < 0 ? "West" : "East";
-		if (f.FEET_NORTH_FROM_REFERENCE !== "" && f.FEET_EAST_FROM_REFERENCE !== "") {
+		if (f.FEET_NORTH_FROM_REFERENCE !== "" && f.FEET_NORTH_FROM_REFERENCE !== "Null" && f.FEET_EAST_FROM_REFERENCE !== "" && f.FEET_EAST_FROM_REFERENCE !== "Null" && f.REFERENCE_CORNER !== "Null") {
 			var footages = Math.abs(f.FEET_NORTH_FROM_REFERENCE) + " " + nsDir + ", " + Math.abs(f.FEET_EAST_FROM_REFERENCE) + " " + ewDir + " from " + f.REFERENCE_CORNER + " corner";
 		} else {
 			var footages = "";
 		}
-
+		console.log("FOO: "+f.ELEVATION);
 		if (f.ELEVATION_KB != "" && f.ELEVATION_KB != "Null") {
 			var elev = f.ELEVATION_KB + " KB";
 		} else if (f.ELEVATION_DF != "" && f.ELEVATION_DF != "Null") {
 			var elev = f.ELEVATION_DF + " DF";
 		} else if (f.ELEVATION_GL != "" && f.ELEVATION_GL != "Null") {
 			var elev = f.ELEVATION_GL + " GL";
-		} else if (f.ELEVATION != "" && f.ELEVATION != "Null") {
-			var elev = f.ELEVATION + " Est.";
 		} else {
 			var elev = "";
 		}
