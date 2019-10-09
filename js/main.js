@@ -178,7 +178,7 @@ function(
 
     // Create map and map widgets:
     var wwc5GeneralServiceURL = "//services.kgs.ku.edu/arcgis8/rest/services/wwc5/wwc5_v2/MapServer";
-	var ogGeneralServiceURL = "//services.kgs.ku.edu/arcgis2/rest/services/oilgas/oilgas_general_A/MapServer";
+	var ogGeneralServiceURL = "//services.kgs.ku.edu/arcgis2/rest/services/oilgas/oilgas_general/MapServer";
     var identifyTask, identifyParams;
     var findTask = new FindTask(ogGeneralServiceURL);
     var findParams = new FindParameters();
