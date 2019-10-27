@@ -199,7 +199,7 @@ function(
     var doqq1991Layer = new ImageryLayer( {url:"//services.kgs.ku.edu/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_DOQQ_1991/ImageServer", id:"1991", format:"jpg", visible:false} );
 	// var hroImageryLayer = new ImageryLayer( {url:"//services.kansasgis.org/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_HRO_2014_Color/ImageServer", id:"2014 HRO", visible:false} );
 	var countyLayer = new MapImageLayer( {url:wwc5GeneralServiceURL, sublayers:[{id:0}], id:"Counties", visible:true} );
-	var fieldsLayer = new TileLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_fields_A/MapServer", id:"Oil and Gas Fields", visible:false} );
+	var fieldsLayer = new TileLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_fields_B/MapServer", id:"Oil and Gas Fields", visible:false} );
 	var lpcLayer = new MapImageLayer( {url:"http://kars.ku.edu/arcgis/rest/services/Sgpchat/SouthernGreatPlainsCrucialHabitatAssessmentToolLPCCrucialHabitat/MapServer", id:"LPC Habitat", visible: false} );
 
 	var leasesLayer = new MapImageLayer( {
@@ -567,22 +567,22 @@ function(
 	var distanceWidget = new DistanceMeasurement2D( {
 		container: "dist-meas",
 		viewModel: {
-			mode: "geodesic",
+			// mode: "geodesic",
 			unit: "us-feet",
 			view: view
 		}
 	} );
-	distanceWidget.viewModel.modes.splice(0,2);
+	// distanceWidget.viewModel.modes.splice(0,2);
 
 	var areaWidget = new AreaMeasurement2D( {
   		container: "area-meas",
 		viewModel: {
-			mode: "geodesic",
+			// mode: "geodesic",
 			unit: "square-us-feet",
 			view: view
 		}
 	} );
-	areaWidget.viewModel.modes.splice(0,2);
+	// areaWidget.viewModel.modes.splice(0,2);
 
 	var legend = new Legend( {
  		view: view,
@@ -1267,9 +1267,9 @@ function(
 				findParams.searchText = dom.byId("lease-name").value;
 				break;
 			case "api":
-				var stcode = dojo.byId('api_state').value;
-				var cocode = dojo.byId('api_county').value;
-				var apicode = dojo.byId('api_number').value;
+				var stcode = dom.byId('api_state').value;
+				var cocode = dom.byId('api_county').value;
+				var apicode = dom.byId('api_number').value;
 
 				var qt = new QueryTask( {url:"http://services.kgs.ku.edu/arcgis2/rest/services/oilgas/oilgas_general/MapServer/0"} );
 				var query = new Query();
@@ -1331,6 +1331,35 @@ function(
 		$.post( "downloadPointsInPoly.cfm?" + plssStr, data, function(response) {
 			$(".download-link").html(response);
 			$("#loader").hide();
+		} );
+	}
+
+
+	takeScreenshot = function() {
+		var title = dom.byId("map-title").value;
+		var orientation = dom.byId("page-setup").value;
+
+		if (orientation === "landscape") {
+			var options = {
+	  			width: 914,
+	  			height: 525
+			};
+		} else {
+			var options = {
+	  			width: 680,
+	  			height: 750
+			};
+		}
+
+		view.takeScreenshot(options).then(function(screenshot) {
+			$("#loader3").show();
+
+			var packet = { "screenshot": screenshot.dataUrl, "orientation": orientation, "title": title };
+
+			$.post( "printPDF.cfm", packet, function(response) {
+				var win = window.open(response, "target='_blank'");
+				$("#loader3").hide();
+			} );
 		} );
 	}
 
@@ -1691,10 +1720,10 @@ function(
 		content += "</div>";
 
 		// Print/save:
-		content += "<div class='find-header esri-icon-right-triangle-arrow' id='print-tool'><span class='find-hdr-txt tools-txt'> Print / Save Map</span></div>";
+		content += "<div class='find-header esri-icon-right-triangle-arrow' id='print-tool'><span class='find-hdr-txt tools-txt'> Print / Save Map</span><img src='images/smUpdated.gif'></div>";
 		content += "<div class='find-body hide' id='find-print-tool'>";
 
-		content +="<div class='print-ui'>The Print Tool has been disabled while we attempt to fix a bug. In the meantime, use the browswer's print command (except in FireFox), or make a screen capture with the Snipping Tool (Windows) or cmd-shift-4 (Mac).</div>";
+		// content +="<div class='print-ui'>The Print Tool has been disabled while we attempt to fix a bug. In the meantime, use the browswer's print command (except in FireFox), or make a screen capture with the Snipping Tool (Windows) or cmd-shift-4 (Mac).</div>";
 
 		// content += "<div class='print-ui'><span class='note'>The browser's print command can also be used to print the map (image only)</span></div>";
 		// content += "<div class='print-ui'>Title<br><input type='text' size='28' id='map-title' placeholder='optional'></div>";
@@ -1726,6 +1755,16 @@ function(
 		// content += "<div class='print-ui'><input type='checkbox' id='incl-legend' checked>Include legend</div>";
 
 		// content += "<div class='print-ui'><button id='print-btn' class='find-button' onclick='printMap()'>Print / Save</button><img id='loader3' class='hide' src='images/ajax-loader.gif'>";
+
+		// Screenshot printing through CF:
+		content += "<div class='print-ui'>Title<br><input type='text' size='28' id='map-title' placeholder='optional'></div>";
+		content += "<div class='print-ui'>Page orientation<br><select id='page-setup'>";
+		content += "<option value='landscape'>Landscape</option>";
+		content += "<option value='portrait'>Portrait</option>";
+		content += "</select></div>";
+		content += "<span class='note'>Print area will generally be smaller than map area, adjust zoom level accordingly</span>";
+		content += "<div class='print-ui'><button id='print-btn' class='find-button' onclick='takeScreenshot()'>Print to PDF</button><img id='loader3' class='hide' src='images/ajax-loader.gif'>";
+
 		// content += "<div id='print-link'></div>";
 		content += '</div></div>';	// end print div.
 
