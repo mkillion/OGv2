@@ -1154,7 +1154,8 @@ function(
             view.scale = 24000;
 		} else {
 			view.extent = f.geometry.extent;
-			view.zoom = view.zoom - 1;
+			// view.zoom = view.zoom - 1;
+			view.goTo(f.geometry.extent);
 		}
 		highlightFeature(f);
     }
