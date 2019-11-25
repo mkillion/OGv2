@@ -1150,6 +1150,7 @@ function(
     function zoomToFeature(features) {
         var f = features[0] ? features[0] : features;
 		if (f.geometry.type === "point") {
+			console.log("foobar");
             view.center = new Point(f.geometry.x, f.geometry.y, wmSR);
             view.scale = 24000;
 		} else {
@@ -1272,7 +1273,7 @@ function(
 				var cocode = dom.byId('api_county').value;
 				var apicode = dom.byId('api_number').value;
 
-				var qt = new QueryTask( {url:"http://services.kgs.ku.edu/arcgis2/rest/services/oilgas/oilgas_general/MapServer/0"} );
+				var qt = new QueryTask( {url:"http://services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_general/MapServer/0"} );
 				var query = new Query();
     			query.returnGeometry = true;
     			query.where = "STATE_CODE = " + stcode + " and COUNTY_CODE = " + cocode + " and API_WELL_NUMBER = " + apicode;
@@ -1366,6 +1367,9 @@ function(
 
 
 	printMap = function() {
+		// NOTE: this function no longer used as of October 2019. PrintTasks were crashing the map servers after they were updated to 10.7.1.
+		// Using takeScreenshot instead and constructing a PDF w/ CF.
+
 		$("#loader3").show();
 		$("#print-link").html("");
 
@@ -1404,7 +1408,6 @@ function(
 		} );
 
 		printTask.execute(params).then(function(response) {
-			console.log(response);
 			var printLink = "<a class='download-link' target='_blank' href='" + response.url + "'><span class='esri-icon-download'></span>Open Map File</a>";
 			$("#print-link").html(printLink);
 			$("#loader3").hide();
@@ -1986,7 +1989,6 @@ function(
 			}
 
 			if (aerialGroup.indexOf(htmlID) > -1) {
-				console.log("b: "+htmlID);
 				aerialTocContent += "<div class='toc-sub-item' id='" + htmlID + "'><label class='toc-label'><input type='checkbox' class='filterable' value='" + layerID + "' id='tcb-" + j + "' onclick='toggleLayer(" + j + ");'" + chkd + ">" + layerID + "</label><span class='esri-icon-forward toc-icon' title='Make Layer Opaque' onclick='changeOpacity(&quot;" + layerID + "&quot;,&quot;up&quot;);'></span><span class='trans-pct' id='" + layerID + "-trans-pct' title='Percent opaque'>100%</span><span class='esri-icon-reverse toc-icon' title='Make Layer Transparent' onclick='changeOpacity(&quot;" + layerID + "&quot;,&quot;down&quot;);'></span></div>";
 			}
 
@@ -2283,7 +2285,7 @@ function(
 		} else {
 			var footages = "";
 		}
-		console.log("FOO: "+f.ELEVATION);
+
 		if (f.ELEVATION_KB != "" && f.ELEVATION_KB != "Null") {
 			var elev = f.ELEVATION_KB + " KB";
 		} else if (f.ELEVATION_DF != "" && f.ELEVATION_DF != "Null") {
