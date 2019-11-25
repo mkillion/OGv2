@@ -567,22 +567,22 @@ function(
 	var distanceWidget = new DistanceMeasurement2D( {
 		container: "dist-meas",
 		viewModel: {
-			// mode: "geodesic",
+			mode: "geodesic",
 			unit: "us-feet",
 			view: view
 		}
 	} );
-	// distanceWidget.viewModel.modes.splice(0,2);
+	distanceWidget.viewModel.modes.splice(0,2);
 
 	var areaWidget = new AreaMeasurement2D( {
   		container: "area-meas",
 		viewModel: {
-			// mode: "geodesic",
+			mode: "geodesic",
 			unit: "square-us-feet",
 			view: view
 		}
 	} );
-	// areaWidget.viewModel.modes.splice(0,2);
+	areaWidget.viewModel.modes.splice(0,2);
 
 	var legend = new Legend( {
  		view: view,
@@ -1721,7 +1721,7 @@ function(
 		content += "</div>";
 
 		// Print/save:
-		content += "<div class='find-header esri-icon-right-triangle-arrow' id='print-tool'><span class='find-hdr-txt tools-txt'> Print / Save Map</span><img src='images/smUpdated.gif'></div>";
+		content += "<div class='find-header esri-icon-right-triangle-arrow' id='print-tool'><span class='find-hdr-txt tools-txt'> Print / Save Map</span></div>";
 		content += "<div class='find-body hide' id='find-print-tool'>";
 
 		// content +="<div class='print-ui'>The Print Tool has been disabled while we attempt to fix a bug. In the meantime, use the browswer's print command (except in FireFox), or make a screen capture with the Snipping Tool (Windows) or cmd-shift-4 (Mac).</div>";
