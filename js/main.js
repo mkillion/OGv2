@@ -197,7 +197,7 @@ function(
 	var naip2006Layer = new ImageryLayer( {url:"//services.kgs.ku.edu/arcgis7/rest/services/IMAGERY_STATEWIDE/FSA_NAIP_2006_Color/ImageServer", id:"2006", format:"jpg", visible:false} );
 	var doqq2002Layer = new ImageryLayer( {url:"//services.kgs.ku.edu/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_DOQQ_2002/ImageServer", id:"2002", format:"jpg", visible:false} );
     var doqq1991Layer = new ImageryLayer( {url:"//services.kgs.ku.edu/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_DOQQ_1991/ImageServer", id:"1991", format:"jpg", visible:false} );
-	// var hroImageryLayer = new ImageryLayer( {url:"//services.kansasgis.org/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_HRO_2014_Color/ImageServer", id:"2014 HRO", visible:false} );
+	var hroImageryLayer = new ImageryLayer( {url:"//services.kansasgis.org/arcgis7/rest/services/IMAGERY_STATEWIDE/Kansas_HRO_2014_Color/ImageServer", id:"2014 High Resolution", visible:false} );
 	var countyLayer = new MapImageLayer( {url:wwc5GeneralServiceURL, sublayers:[{id:0}], id:"Counties", visible:true} );
 	var fieldsLayer = new TileLayer( {url:"//services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_fields_B/MapServer", id:"Oil and Gas Fields", visible:false} );
 	var lpcLayer = new MapImageLayer( {url:"http://kars.ku.edu/arcgis/rest/services/Sgpchat/SouthernGreatPlainsCrucialHabitatAssessmentToolLPCCrucialHabitat/MapServer", id:"LPC Habitat", visible: false} );
@@ -315,7 +315,7 @@ function(
 			naip2010Layer,
 			naip2012Layer,
 			naip2014Layer,
-			// hroImageryLayer,
+			hroImageryLayer,
 			naip2015Layer,
 			naip2017Layer,
 			topoLayer,
@@ -1954,9 +1954,9 @@ function(
 		var aerialTocContent = "";
 		///var aquiferTocContent = "";
 		var topoContent = "";
-		var aerialGroup = ["2017","2015","2014","2012","2010","2008","2006","2002","1991","2014 HRO"];
+		var aerialGroup = ["2017","2015","2014-High-Resolution","2014","2012","2010","2008","2006","2002","1991"];
 		var aquiferGroup = ["Alluvial","Dakota","Flint-Hills","Glacial-Drift","High-Plains","Osage","Ozark"];
-		var transparentLayers = ["Topo","2015","2014 1ft","2002","1991","Section-Township-Range","LPC Habitat","Oil and Gas Fields"];
+		var transparentLayers = ["Topo","2015","2014 High Resolution","2002","1991","Section-Township-Range","LPC Habitat","Oil and Gas Fields"];
 
         for (var j=lyrs.length - 1; j>-1; j--) {
             var layerID = lyrs._items[j].id;
@@ -1986,6 +1986,7 @@ function(
 			}
 
 			if (aerialGroup.indexOf(htmlID) > -1) {
+				console.log("b: "+htmlID);
 				aerialTocContent += "<div class='toc-sub-item' id='" + htmlID + "'><label class='toc-label'><input type='checkbox' class='filterable' value='" + layerID + "' id='tcb-" + j + "' onclick='toggleLayer(" + j + ");'" + chkd + ">" + layerID + "</label><span class='esri-icon-forward toc-icon' title='Make Layer Opaque' onclick='changeOpacity(&quot;" + layerID + "&quot;,&quot;up&quot;);'></span><span class='trans-pct' id='" + layerID + "-trans-pct' title='Percent opaque'>100%</span><span class='esri-icon-reverse toc-icon' title='Make Layer Transparent' onclick='changeOpacity(&quot;" + layerID + "&quot;,&quot;down&quot;);'></span></div>";
 			}
 
