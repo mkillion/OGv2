@@ -1685,7 +1685,7 @@ function(
 		content += "<div class='find-body hide' id='find-download-tool'>";
 		content += "<div class='note'><ul><li>Creates comma-delimited text files with well, tops, log, LAS, cuttings, and core information for wells visible in the current map extent.</li>";
         content += "<li>If a filter is in effect, the download will also be filtered.</li>";
-		content += "<li>To download a shapefile of all oil and gas wells, visit the <a href='http://www.kgs.ku.edu/PRS/petroDB.html' target='_blank'>Oil and Gas Database page.</a>.</li></ul></div>";
+		content += "<li>For other well data downloads, pre-created files of large data sets, and a shapefile of all oil and gas wells, visit the <a href='http://www.kgs.ku.edu/PRS/petroDB.html' target='_blank'>Oil and Gas Database page.</a>.</li></ul></div>";
 		// content += "<table><tr><td>Include:</td></tr>";
 		// content += "<tr><td><input type='checkbox' class='buff-input' id='download-og-chk' checked> Oil and gas well data</td></tr>";
 		// content += "<tr><td><input type='checkbox' class='buff-input' id='download-wwc5-chk'> WWC5 water well data</td></tr></table>";
