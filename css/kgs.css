@@ -22,6 +22,12 @@ th, td {
 	margin-left: 17px;
 }
 
+.esri-popup__feature-menu-button {
+	color: red;
+	font-weight: bold;
+	font-size: 16px !important;
+}
+
 .esri-icon-table,
 .esri-icon-contact,
 .esri-icon-documentation,
