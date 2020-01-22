@@ -4,11 +4,15 @@
 
 <cfset WellsFileText = "">
 
-<cfif FindNoCase("kid in", #form.attrWhere#) neq 0>
-	<cfset form.attrWhere = Replace(#form.attrWhere#, "kid in", "w.kid in")>
+<cfif IsDefined("form.attrWhere")>
+	<cfif FindNoCase("kid in", #form.attrWhere#) neq 0>
+		<cfset form.attrWhere = Replace(#form.attrWhere#, "kid in", "w.kid in")>
+	</cfif>
 </cfif>
-<cfif FindNoCase("kid in", #form.ogComboWhere#) neq 0>
-	<cfset form.ogComboWhere = Replace(#form.ogComboWhere#, "kid in", "w.kid in")>
+<cfif IsDefined("form.ogComboWhere")>
+	<cfif FindNoCase("kid in", #form.ogComboWhere#) neq 0>
+		<cfset form.ogComboWhere = Replace(#form.ogComboWhere#, "kid in", "w.kid in")>
+	</cfif>
 </cfif>
 
 <!--- Wells: --->
